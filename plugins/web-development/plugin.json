@@ -1,0 +1,15 @@
+{
+  "name": "web-development",
+  "version": "1.0.0",
+  "description": "Frontend and fullstack web development toolkit",
+  "author": "",
+  "commands": [
+    "commands/component.md",
+    "commands/style.md",
+    "commands/a11y.md",
+    "commands/api-endpoint.md",
+    "commands/test.md"
+  ],
+  "rules": [],
+  "dependencies": []
+}

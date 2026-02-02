@@ -1,0 +1,15 @@
+{
+  "name": "python-toolkit",
+  "version": "1.0.0",
+  "description": "Python development essentials with database, testing, and documentation commands",
+  "author": "",
+  "commands": [
+    "commands/db-architect.md",
+    "commands/db-migrate.md",
+    "commands/query.md",
+    "commands/test.md",
+    "commands/doc.md"
+  ],
+  "rules": [],
+  "dependencies": []
+}

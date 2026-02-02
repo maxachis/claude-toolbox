@@ -1,0 +1,37 @@
+{
+  "$schema": "https://claude.ai/schemas/keybindings.json",
+  "bindings": [
+    {
+      "key": "ctrl+c",
+      "command": "cancel"
+    },
+    {
+      "key": "ctrl+shift+c",
+      "command": "copy"
+    },
+    {
+      "key": "ctrl+shift+v",
+      "command": "paste"
+    },
+    {
+      "key": "ctrl+l",
+      "command": "clear"
+    },
+    {
+      "key": "ctrl+k",
+      "command": "clearScreen"
+    },
+    {
+      "key": "up",
+      "command": "historyPrevious"
+    },
+    {
+      "key": "down",
+      "command": "historyNext"
+    },
+    {
+      "key": "ctrl+space",
+      "command": "autocomplete"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://claude.ai/schemas/keybindings.json",
+  "bindings": [
+    {
+      "key": "ctrl+c",
+      "command": "cancel"
+    },
+    {
+      "key": "ctrl+d",
+      "command": "exit"
+    },
+    {
+      "key": "ctrl+l",
+      "command": "clear"
+    },
+    {
+      "key": "ctrl+u",
+      "command": "clearLine"
+    },
+    {
+      "key": "ctrl+w",
+      "command": "deleteWord"
+    },
+    {
+      "key": "ctrl+p",
+      "command": "historyPrevious"
+    },
+    {
+      "key": "ctrl+n",
+      "command": "historyNext"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://claude.ai/schemas/mcp.json",
+  "name": "github",
+  "description": "GitHub integration via gh CLI",
+  "type": "stdio",
+  "command": "gh",
+  "args": ["copilot", "--mcp"],
+  "env": {
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": true
+  }
+}

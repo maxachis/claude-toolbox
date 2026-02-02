@@ -1,0 +1,14 @@
+{
+  "name": "api-toolkit",
+  "version": "1.0.0",
+  "description": "Complete API development toolkit with design, implementation, testing, and documentation commands",
+  "author": "",
+  "commands": [
+    "commands/api-design.md",
+    "commands/api-docs.md",
+    "commands/api-endpoint.md",
+    "commands/api-test.md"
+  ],
+  "rules": [],
+  "dependencies": []
+}
