@@ -9,6 +9,7 @@ Complete CLAUDE.md templates for different project types.
 - Python projects
 - TypeScript/Node projects
 - React applications
+- Vue applications
 
 ### [Conventions](conventions/)
 Reusable rule snippets for common conventions.

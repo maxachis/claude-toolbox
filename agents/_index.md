@@ -1,54 +1,75 @@
 # Agents Index
 
-Custom subagent definitions for specialized tasks.
+Custom subagent definitions for Claude Code.
 
-## Categories
+## Installation
 
-### [Specialists](specialists/)
-Deep expertise agents for specific domains.
-- Security reviewer
-- Performance analyst
-- Database expert
+Copy agents to your Claude config:
 
-### [Workflows](workflows/)
-Multi-step automated process agents.
-- PR reviewer
-- Test generator
-- Documentation builder
+```bash
+# User-level (available in all projects)
+cp agents/*.md ~/.claude/agents/
 
-## What Are Agents?
-
-Agents are specialized subagents that can be invoked for complex tasks. They have:
-- Focused expertise in one area
-- Access to specific tools
-- Multi-step reasoning capabilities
-
-## Creating Agents
-
-Agent definitions specify:
-- Name and description
-- Available tools
-- Specialized prompts
-- Task boundaries
-
-## Example Agent Definition
-
-```yaml
-name: security-reviewer
-description: Reviews code for security vulnerabilities
-tools:
-  - read
-  - grep
-  - glob
-prompt: |
-  You are a security expert. Review the provided code for:
-  - OWASP Top 10 vulnerabilities
-  - Language-specific security issues
-  - Dependency vulnerabilities
-
-  Report findings by severity with remediation advice.
+# Project-level (available only in this project)
+mkdir -p .claude/agents
+cp agents/*.md .claude/agents/
 ```
 
-## Usage
+## Available Agents
 
-Agents are typically invoked through the Task tool or as part of automated workflows.
+| Agent | Description |
+|-------|-------------|
+| `python-init` | Python project initialization and setup |
+| `astro-vue-init` | Astro + Vue islands project setup |
+| `db-architect` | Relational database schema design |
+| `security-reviewer` | Security audits and vulnerability analysis |
+| `performance-analyst` | Performance optimization and profiling |
+| `pr-reviewer` | Pull request code review |
+| `test-generator` | Comprehensive test generation |
+
+## How Agents Work
+
+Agents are **automatically activated** based on:
+1. The `description` field matching your task
+2. Explicit requests like "use the security-reviewer agent"
+
+## Agent File Format
+
+Agents use YAML frontmatter in Markdown files:
+
+```markdown
+---
+name: my-agent
+description: When Claude should use this agent. Be specific.
+tools: Read, Grep, Glob, Bash
+model: sonnet
+---
+
+System prompt for the agent goes here.
+
+## When Invoked
+1. First step
+2. Second step
+...
+```
+
+## Configuration Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Unique identifier (lowercase, hyphens) |
+| `description` | Yes | When to delegate to this agent |
+| `tools` | No | Allowed tools (comma-separated) |
+| `model` | No | `sonnet`, `opus`, `haiku`, or `inherit` |
+| `permissionMode` | No | `default`, `acceptEdits`, `bypassPermissions` |
+
+## Creating Custom Agents
+
+You can also create agents interactively:
+
+```bash
+claude
+> /agents
+```
+
+This opens an interface to create and configure agents with Claude's help.
