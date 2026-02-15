@@ -25,6 +25,7 @@ cp agents/*.md .claude/agents/
 | `security-reviewer` | Security audits and vulnerability analysis |
 | `performance-analyst` | Performance optimization and profiling |
 | `pr-reviewer` | Pull request code review |
+| `refactorer` | Code restructuring and cleanup |
 | `test-generator` | Comprehensive test generation |
 
 ## How Agents Work

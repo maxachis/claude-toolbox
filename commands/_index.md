@@ -26,6 +26,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/doc` | [documentation](documentation/) | Generate or update documentation |
 | `/explain` | [documentation](documentation/) | Explain how code works |
 | `/refactor` | [refactoring](refactoring/) | Refactor code to improve quality |
+| `/session-review` | [workflow](workflow/) | Analyze session for inefficiencies and suggest improvements |
 
 ## Categories
 
@@ -72,6 +73,10 @@ Commands for code documentation.
 ### [Refactoring](refactoring/)
 Commands for code improvement.
 - `refactor` - Improve code quality without changing behavior
+
+### [Workflow](workflow/)
+Commands for analyzing and improving Claude Code session efficiency.
+- `session-review` - Analyze conversation for inefficiencies and suggest improvements
 
 ## Installation
 

@@ -45,6 +45,22 @@ Examples:
 - Historical changes typically touch one concern at a time
 - Team members can work on concerns independently
 
+## Directory Organization
+
+The same splitting principles apply at the directory level. When a concern represents a distinct integration or trust boundary, isolate it in its own directory rather than scattering it across the codebase.
+
+Isolate when:
+- **The concern crosses a trust boundary** (authentication, authorization, credential management)
+- **The concern wraps an external dependency** (third-party APIs, vendor SDKs, external services)
+- **Changes require specialized review** (security-sensitive logic, payment processing, data exports)
+- **The implementation could be swapped independently** (switching auth providers, replacing an API vendor)
+
+This isolation serves two purposes. First, it gives an AI assistant (or any developer) a clear target — working on auth means reading the auth directory, not hunting through the full codebase. Second, it creates a natural audit surface: security-sensitive or integration-heavy code lives in known locations and can be reviewed with appropriate scrutiny.
+
+Name directories after the concern they represent (`auth/`, `integrations/`, `payments/`), not after implementation details (`middleware/`, `wrappers/`). The name should answer "what boundary does this protect?" rather than "what pattern does this use?"
+
+Avoid isolating prematurely. If a concern is a single file with no signs of growth, a dedicated directory adds navigation overhead for no benefit. Let complexity justify the structure.
+
 ## General Guidance
 
 | Pattern | Recommendation |

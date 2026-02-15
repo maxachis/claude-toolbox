@@ -41,6 +41,7 @@ claude-toolbox/
 | [testing/](commands/testing/) | `test`, `debug` | Testing and debugging |
 | [documentation/](commands/documentation/) | `doc`, `explain` | Code documentation |
 | [refactoring/](commands/refactoring/) | `refactor` | Code refactoring |
+| [workflow/](commands/workflow/) | `session-review` | Session efficiency analysis |
 
 ## Installation Methods
 
