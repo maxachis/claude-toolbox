@@ -9,6 +9,7 @@ Commands for git workflow automation.
 | `commit` | Generate commit message and commit staged changes |
 | `pr` | Create a pull request |
 | `review` | Review code for issues and improvements |
+| `ship` | Stage, commit, and push in one step |
 
 ## Usage
 
@@ -47,3 +48,8 @@ A typical git workflow:
 2. `/review` - Review your changes for issues
 3. `/commit` - Commit with a conventional commit message
 4. `/pr` - Create a pull request
+
+Or the fast path:
+
+1. Make changes to your code
+2. `/ship` - Stage, commit, and push in one command

@@ -19,6 +19,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/commit` | [git](git/) | Generate commit message and commit changes |
 | `/pr` | [git](git/) | Create a pull request |
 | `/review` | [git](git/) | Review code for issues and improvements |
+| `/ship` | [git](git/) | Stage, commit, and push in one step |
 | `/security-audit` | [security](security/) | Audit code for security vulnerabilities |
 | `/auth` | [security](security/) | Implement authentication and authorization |
 | `/test` | [testing](testing/) | Generate tests for code |
@@ -54,6 +55,7 @@ Commands for git workflow automation.
 - `commit` - Conventional commit messages
 - `pr` - Create pull requests with summaries
 - `review` - Code review with severity ratings
+- `ship` - Stage, commit, and push in one step
 
 ### [Security](security/)
 Commands for security auditing and authentication.

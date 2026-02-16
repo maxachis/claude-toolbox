@@ -4,11 +4,11 @@ Analyze the current conversation to identify inefficiencies and suggest durable 
 
 ## Arguments
 
-- `$ARGUMENTS` - (Optional) Focus area: `tools`, `search`, `context`, `approach`, or leave blank for full review
+- `$ARGUMENTS` - (Optional) Focus area: `tools`, `search`, `context`, `approach`, `workflow`, or leave blank for full review
 
 ## Instructions
 
-Review the entire conversation history above this invocation point. Analyze it in two passes:
+Review the entire conversation history above this invocation point. Analyze it in three passes:
 
 ### Pass 1: Identify Inefficiency Patterns
 
@@ -44,9 +44,29 @@ Scan for these specific anti-patterns and flag every instance you find:
 - Ignoring or not reading CLAUDE.md, README, or other documentation that would have guided the approach
 - Failing to check git history when understanding existing decisions
 
-### Pass 2: Quantify and Prioritize
+### Pass 2: User Workflow Patterns
 
-For each pattern found, estimate:
+Scan the user's side of the conversation for recurring patterns that suggest automation opportunities:
+
+**Repetitive Multi-Step Requests**
+- Sequences of instructions the user gave repeatedly that could be a single slash command (e.g., "commit and push" → `/ship`)
+- Manual orchestration of steps that always go together (e.g., "run tests, fix lint, then commit")
+
+**Clarification Overhead**
+- Prompts that required back-and-forth to clarify intent, where a CLAUDE.md rule or convention could have made the intent obvious
+- Ambiguous requests that led to wrong-direction work before correction
+
+**Automation Candidates**
+- Tasks the user performed manually that could be scripted (setup steps, environment checks, repeated file operations)
+- Workflows that followed a consistent shape across multiple sessions, suggesting a reusable command or agent
+
+**Missing Tooling**
+- Moments where the user described a workflow that an existing skill or command could have handled, but neither knew about it
+- Gaps in the current command/skill set revealed by what the user actually needed
+
+### Pass 3: Quantify and Prioritize
+
+For each pattern found in Pass 1 and Pass 2, estimate:
 - **Frequency**: How many times it occurred in this session
 - **Waste level**: Low (minor extra read), Medium (several unnecessary steps), High (major rework or wrong direction)
 - **Preventability**: Whether better prompting, CLAUDE.md rules, skills, or commands could have avoided it
@@ -72,6 +92,16 @@ Structure your analysis as follows:
 - **Impact**: [what this cost in terms of extra steps or wrong directions]
 
 [Repeat for each finding, ordered by waste level descending]
+
+### Workflow Findings
+
+#### 1. [Pattern Name]
+- **Occurrences**: [count] instances
+- **Time saved if automated**: [Low / Medium / High]
+- **Examples**: [cite specific user prompts or sequences]
+- **Suggested solution**: [slash command, CLAUDE.md rule, script, or skill]
+
+[Repeat for each finding]
 
 ### Suggested Improvements
 
