@@ -15,6 +15,10 @@ CLAUDE_DIR="${HOME}/.claude"
 # Directories to link: toolbox_subdir -> ~/.claude/target_name
 LINK_DIRS=("commands" "skills")
 
+# Settings file to merge into ~/.claude/settings.json
+SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
+SETTINGS_DEST="${CLAUDE_DIR}/settings.json"
+
 # Colors (if terminal supports them)
 if [ -t 1 ]; then
   GREEN='\033[0;32m'; YELLOW='\033[0;33m'; RED='\033[0;31m'; NC='\033[0m'
@@ -61,6 +65,85 @@ remove_link() {
   fi
 }
 
+find_python() {
+  # Try each candidate; verify it actually runs (Windows Store stubs exist but fail)
+  for cmd in python3 python py; do
+    if "$cmd" --version &>/dev/null; then
+      echo "$cmd"
+      return 0
+    fi
+  done
+  return 1
+}
+
+merge_settings() {
+  local src="$1" dest="$2"
+
+  if [[ ! -f "$src" ]]; then
+    warn "Settings source not found — skipping merge"
+    return
+  fi
+
+  local py
+  py="$(find_python)" || {
+    warn "Python not found — skipping settings merge"
+    return
+  }
+
+  # Back up existing settings before merge
+  if [[ -f "$dest" ]]; then
+    cp "$dest" "${dest}.backup.$(date +%Y%m%d%H%M%S)"
+  fi
+
+  "$py" - "$src" "$dest" << 'PYEOF'
+import json, sys, os
+
+def deep_merge(base, overlay):
+    """Merge overlay into base. Arrays are unioned, objects merged recursively."""
+    result = dict(base)
+    for key, value in overlay.items():
+        if key in result:
+            if isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = deep_merge(result[key], value)
+            elif isinstance(result[key], list) and isinstance(value, list):
+                # Union: add items from overlay not already in base
+                seen = set(json.dumps(item, sort_keys=True) for item in result[key])
+                for item in value:
+                    serialized = json.dumps(item, sort_keys=True)
+                    if serialized not in seen:
+                        result[key].append(item)
+                        seen.add(serialized)
+            else:
+                result[key] = value
+        else:
+            result[key] = value
+    return result
+
+src_path, dest_path = sys.argv[1], sys.argv[2]
+
+with open(src_path) as f:
+    overlay = json.load(f)
+
+if os.path.isfile(dest_path):
+    with open(dest_path) as f:
+        base = json.load(f)
+else:
+    base = {}
+
+merged = deep_merge(base, overlay)
+
+with open(dest_path, "w") as f:
+    json.dump(merged, f, indent=2)
+    f.write("\n")
+PYEOF
+
+  if [[ $? -eq 0 ]]; then
+    info "settings.json merged"
+  else
+    error "Settings merge failed"
+  fi
+}
+
 do_link() {
   mkdir -p "$CLAUDE_DIR"
 
@@ -92,6 +175,9 @@ do_link() {
     create_link "$src" "$dest"
     info "${dir}/ linked"
   done
+
+  # Merge global settings
+  merge_settings "$SETTINGS_SRC" "$SETTINGS_DEST"
 
   echo ""
   info "Done! Your toolbox is linked to ${CLAUDE_DIR}"
@@ -128,7 +214,7 @@ case "${1:-}" in
   --help|-h)
     echo "Usage: $0 [--unlink]"
     echo ""
-    echo "  (no args)   Link toolbox dirs into ~/.claude/"
+    echo "  (no args)   Link toolbox dirs and merge settings into ~/.claude/"
     echo "  --unlink    Remove links and restore backups"
     ;;
   *)
