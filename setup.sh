@@ -19,6 +19,10 @@ LINK_DIRS=("commands" "skills")
 SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
 SETTINGS_DEST="${CLAUDE_DIR}/settings.json"
 
+# Global CLAUDE.md to link into ~/.claude/CLAUDE.md
+CLAUDE_MD_SRC="${SCRIPT_DIR}/configs/CLAUDE.md"
+CLAUDE_MD_DEST="${CLAUDE_DIR}/CLAUDE.md"
+
 # Colors (if terminal supports them)
 if [ -t 1 ]; then
   GREEN='\033[0;32m'; YELLOW='\033[0;33m'; RED='\033[0;31m'; NC='\033[0m'
@@ -176,6 +180,26 @@ do_link() {
     info "${dir}/ linked"
   done
 
+  # Link global CLAUDE.md
+  if [[ -f "$CLAUDE_MD_SRC" ]]; then
+    if is_link "$CLAUDE_MD_DEST" && [[ "$(readlink -f "$CLAUDE_MD_DEST" 2>/dev/null || true)" == "$(readlink -f "$CLAUDE_MD_SRC" 2>/dev/null || true)" ]]; then
+      info "CLAUDE.md already linked"
+    else
+      if [[ -f "$CLAUDE_MD_DEST" ]] && ! is_link "$CLAUDE_MD_DEST"; then
+        local backup="${CLAUDE_MD_DEST}.backup.$(date +%Y%m%d%H%M%S)"
+        warn "CLAUDE.md exists — backing up to ${backup##*/}"
+        mv "$CLAUDE_MD_DEST" "$backup"
+      elif is_link "$CLAUDE_MD_DEST"; then
+        warn "CLAUDE.md is a stale link — removing"
+        remove_link "$CLAUDE_MD_DEST"
+      fi
+      create_link "$CLAUDE_MD_SRC" "$CLAUDE_MD_DEST"
+      info "CLAUDE.md linked"
+    fi
+  else
+    warn "configs/CLAUDE.md not found — skipping"
+  fi
+
   # Merge global settings
   merge_settings "$SETTINGS_SRC" "$SETTINGS_DEST"
 
@@ -202,6 +226,21 @@ do_unlink() {
       warn "${dir}/ is not a link — skipping"
     fi
   done
+
+  # Unlink CLAUDE.md
+  if is_link "$CLAUDE_MD_DEST"; then
+    remove_link "$CLAUDE_MD_DEST"
+    info "CLAUDE.md unlinked"
+
+    local latest_backup
+    latest_backup="$(ls -dt "${CLAUDE_MD_DEST}.backup."* 2>/dev/null | head -1 || true)"
+    if [[ -n "$latest_backup" ]]; then
+      mv "$latest_backup" "$CLAUDE_MD_DEST"
+      info "CLAUDE.md restored from backup"
+    fi
+  else
+    warn "CLAUDE.md is not a link — skipping"
+  fi
 
   echo ""
   info "Done! Links removed."
