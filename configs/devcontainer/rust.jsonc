@@ -6,7 +6,8 @@
 
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
   },
 
   "customizations": {
@@ -26,7 +27,14 @@
     }
   },
 
-  "postCreateCommand": "cargo build",
+  "postCreateCommand": {
+    "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest",
+    "project-deps": "cargo build"
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind"
+  ],
 
   "forwardPorts": [],
 

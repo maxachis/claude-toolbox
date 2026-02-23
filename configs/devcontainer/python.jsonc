@@ -6,7 +6,8 @@
 
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
   },
 
   "customizations": {
@@ -28,7 +29,14 @@
   },
 
   // Adjust based on project: pip install -r requirements.txt, uv sync, etc.
-  "postCreateCommand": "if [ -f requirements.txt ]; then pip install -r requirements.txt; elif [ -f pyproject.toml ]; then pip install -e '.[dev]'; fi",
+  "postCreateCommand": {
+    "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest",
+    "project-deps": "if [ -f requirements.txt ]; then pip install -r requirements.txt; elif [ -f pyproject.toml ]; then pip install -e '.[dev]'; fi"
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind"
+  ],
 
   "forwardPorts": [],
 

@@ -37,7 +37,11 @@ Apply these project-specific customizations to the copied file:
    - Rust: keep `cargo build` as default
 3. **Ports**: Scan source files for common port patterns (e.g., `PORT=`, `listen(`, `:8080`, `:3000`) and add discovered ports to `forwardPorts`
 
-### Step 5: Report
+### Step 5: Validate
+
+Run `devcontainer read-configuration --workspace-folder .` to verify the generated config parses correctly. If the command fails, fix the JSON error and re-validate. If `devcontainer` is not installed, skip this step.
+
+### Step 6: Report
 
 Show the user:
 - The path to the created file

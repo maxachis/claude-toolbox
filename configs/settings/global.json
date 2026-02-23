@@ -22,7 +22,11 @@
       "Bash(uv sync:*)",
       "Bash(uv add:*)",
       "Bash(uv run:*)",
-      "Bash(uv pip list:*)"
+      "Bash(uv pip list:*)",
+      "Bash(docker:*)",
+      "Bash(devcontainer build:*)",
+      "Bash(head:*)",
+      "Bash(devcontainer read-configuration:*)"
     ]
   }
 }

@@ -30,7 +30,14 @@
   },
 
   // Adjust based on project: npm install, pnpm install, bun install
-  "postCreateCommand": "npm install",
+  "postCreateCommand": {
+    "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest",
+    "project-deps": "npm install"
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind"
+  ],
 
   "forwardPorts": [],
 

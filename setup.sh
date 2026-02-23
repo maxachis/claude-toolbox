@@ -3,8 +3,9 @@
 # setup.sh — Link claude-toolbox into ~/.claude/
 #
 # Usage:
-#   ./setup.sh           # Link commands and skills
-#   ./setup.sh --unlink  # Remove links and restore backups
+#   ./setup.sh                    # Validate agents, then link
+#   ./setup.sh --unlink           # Remove links and restore backups
+#   ./setup.sh --skip-validation  # Link without validating agents
 #
 
 set -euo pipefail
@@ -13,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_DIR="${HOME}/.claude"
 
 # Directories to link: toolbox_subdir -> ~/.claude/target_name
-LINK_DIRS=("commands" "skills")
+LINK_DIRS=("commands" "skills" "agents")
 
 # Settings file to merge into ~/.claude/settings.json
 SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
@@ -149,6 +150,20 @@ PYEOF
 }
 
 do_link() {
+  # Validate agents before linking (unless --skip-validation)
+  if [[ "${SKIP_VALIDATION:-}" != "1" ]]; then
+    if [[ -x "${SCRIPT_DIR}/validate.sh" ]]; then
+      if ! "${SCRIPT_DIR}/validate.sh"; then
+        error "Agent validation failed — fix errors above before linking"
+        error "Or run with --skip-validation to bypass"
+        exit 1
+      fi
+      echo ""
+    else
+      warn "validate.sh not found — skipping agent validation"
+    fi
+  fi
+
   mkdir -p "$CLAUDE_DIR"
 
   for dir in "${LINK_DIRS[@]}"; do
@@ -250,11 +265,15 @@ case "${1:-}" in
   --unlink)
     do_unlink
     ;;
+  --skip-validation)
+    SKIP_VALIDATION=1 do_link
+    ;;
   --help|-h)
-    echo "Usage: $0 [--unlink]"
+    echo "Usage: $0 [--unlink | --skip-validation]"
     echo ""
-    echo "  (no args)   Link toolbox dirs and merge settings into ~/.claude/"
-    echo "  --unlink    Remove links and restore backups"
+    echo "  (no args)            Validate agents, then link toolbox into ~/.claude/"
+    echo "  --skip-validation    Link without validating agents"
+    echo "  --unlink             Remove links and restore backups"
     ;;
   *)
     do_link

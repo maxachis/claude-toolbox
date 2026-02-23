@@ -10,7 +10,7 @@ Reusable `.devcontainer/devcontainer.json` templates for common project types.
 | `node.jsonc` | `typescript-node:22` | ESLint, Prettier, TS |
 | `rust.jsonc` | `rust:1` | rust-analyzer, CodeLLDB, crates |
 
-All templates include git and GitHub CLI features.
+All templates include git, GitHub CLI, Claude Code, and openspec. Host `~/.claude/` is bind-mounted so Claude Code is pre-authenticated.
 
 ## Manual Usage
 
