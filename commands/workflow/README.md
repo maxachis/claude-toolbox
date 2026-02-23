@@ -6,6 +6,7 @@ Commands for analyzing and improving Claude Code session efficiency.
 
 | Command | Description |
 |---------|-------------|
+| `devcontainer-init` | Scaffold a `.devcontainer/` setup for the current project |
 | `session-review` | Analyze conversation for inefficiencies and suggest improvements |
 
 ## Usage

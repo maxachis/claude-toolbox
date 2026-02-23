@@ -1,0 +1,34 @@
+// Rust devcontainer template
+// Customize: rust toolchain, additional targets, forwarded ports
+{
+  "name": "${projectName}",
+  "image": "mcr.microsoft.com/devcontainers/rust:1",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        "serayuzgur.crates"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "[rust]": {
+          "editor.defaultFormatter": "rust-lang.rust-analyzer"
+        },
+        "rust-analyzer.check.command": "clippy"
+      }
+    }
+  },
+
+  "postCreateCommand": "cargo build",
+
+  "forwardPorts": [],
+
+  "remoteUser": "vscode"
+}

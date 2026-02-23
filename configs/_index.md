@@ -19,6 +19,12 @@ Model Context Protocol server configurations.
 - GitHub integration
 - Database connections
 
+### [Devcontainer](devcontainer/)
+`.devcontainer/devcontainer.json` templates for common project types.
+- Python (Ruff, Pylance)
+- Node/TypeScript (ESLint, Prettier)
+- Rust (rust-analyzer, CodeLLDB)
+
 ## Installation
 
 ### Settings
