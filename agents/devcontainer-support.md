@@ -174,6 +174,100 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 - Never commit `.env` files with real secrets
 - Use `localEnv` to forward host environment: `"remoteEnv": { "API_KEY": "${localEnv:API_KEY}" }`
 
+## Authentication Propagation
+
+Ensuring credentials from the host are available inside the container.
+
+### Automatic Forwarding (VS Code / Claude Code)
+- **SSH agent** — VS Code automatically forwards the host's SSH agent into the container. Ensure `ssh-agent` is running on the host with keys loaded (`ssh-add -l`).
+- **GPG keys** — VS Code forwards GPG for commit signing. Requires `gnupg2` installed in the container (included in `common-utils` feature).
+- **Git credentials** — VS Code forwards the host's Git credential manager automatically. No extra config needed for HTTPS-based Git auth.
+
+### Credential File Mounts
+For tools that read config files from the home directory, mount them read-only:
+```jsonc
+"mounts": [
+  // GitHub CLI
+  "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,readonly",
+  // Docker CLI
+  "source=${localEnv:HOME}/.docker/config.json,target=/home/vscode/.docker/config.json,type=bind,readonly",
+  // npm (registry tokens)
+  "source=${localEnv:HOME}/.npmrc,target=/home/vscode/.npmrc,type=bind,readonly",
+  // PyPI (twine/pip tokens)
+  "source=${localEnv:HOME}/.pypirc,target=/home/vscode/.pypirc,type=bind,readonly",
+  // AWS CLI
+  "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly"
+]
+```
+
+### Guidelines
+- Always mount credential files as `readonly` to prevent the container from modifying host credentials
+- Replace `/home/vscode` with the actual `remoteUser` home if using a different user
+- On Windows/WSL, `${localEnv:HOME}` resolves differently — use `${localEnv:USERPROFILE}` for Windows paths or ensure the WSL home has the credentials
+- If a credential file doesn't exist on the host, the mount will fail at container start — guard with `initializeCommand` or make mounts conditional
+- Prefer `localEnv` token forwarding (see Environment Variables > Secrets) over file mounts when the tool supports env-based auth (e.g., `GH_TOKEN`, `DOCKER_CONFIG`, `AWS_ACCESS_KEY_ID`)
+
+## Common CLI Tools
+
+### Available as Devcontainer Features
+These install cleanly via the features mechanism and should be preferred:
+```jsonc
+"features": {
+  "ghcr.io/devcontainers/features/github-cli:1": {},
+  "ghcr.io/devcontainers/features/aws-cli:1": {},
+  "ghcr.io/devcontainers/features/terraform:1": {},
+  "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+  "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+  "ghcr.io/devcontainers/features/azure-cli:1": {},
+  "ghcr.io/devcontainers/features/sshpass:1": {}
+}
+```
+
+### npm Global Tools (install via lifecycle scripts)
+Tools not available as features should be installed in `postCreateCommand`:
+```jsonc
+"postCreateCommand": {
+  "openspec": "npm install -g @fission-ai/openspec@latest",
+  "other-tools": "npm install -g vercel@latest turbo@latest"
+}
+```
+Requires the Node.js feature to be present. Place the `node` feature before any lifecycle script that uses `npm`.
+
+### Ensuring CLI Auth Inside the Container
+
+| Tool | Auth Method | Container Setup |
+|------|------------|-----------------|
+| `gh` (GitHub CLI) | OAuth config file | Mount `~/.config/gh` (see Auth Propagation) or set `GH_TOKEN` via `remoteEnv` |
+| `aws` | Credentials file | Mount `~/.aws` or set `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` via `remoteEnv` |
+| `docker` | Config file | Mount `~/.docker/config.json` or use docker-in-docker feature (has its own auth) |
+| `npm` | `.npmrc` token | Mount `~/.npmrc` or set `NPM_TOKEN` via `remoteEnv` |
+| `openspec` | Depends on config | Install globally via `postCreateCommand`; forward any required API keys via `remoteEnv` |
+| `terraform` | Provider-specific | Forward cloud provider credentials (AWS, GCP, Azure) via mounts or `remoteEnv` |
+| `kubectl` | Kubeconfig | Mount `~/.kube` or set `KUBECONFIG` via `remoteEnv` |
+
+### Pattern: Combined Setup
+```jsonc
+{
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/aws-cli:1": {}
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,readonly",
+    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly"
+  ],
+  "remoteEnv": {
+    "GH_TOKEN": "${localEnv:GH_TOKEN}",
+    "NPM_TOKEN": "${localEnv:NPM_TOKEN}"
+  },
+  "postCreateCommand": {
+    "openspec": "npm install -g @fission-ai/openspec@latest"
+  }
+}
+```
+
 ## Validation
 
 After making changes, validate the configuration using the devcontainer CLI:
