@@ -21,6 +21,7 @@ cp agents/*.md .claude/agents/
 |-------|-------------|
 | `python-init` | Python project initialization and setup |
 | `astro-vue-init` | Astro + Vue islands project setup |
+| `devcontainer-support` | Devcontainer troubleshooting and configuration |
 | `db-architect` | Relational database schema design |
 | `security-reviewer` | Security audits and vulnerability analysis |
 | `performance-analyst` | Performance optimization and profiling |
