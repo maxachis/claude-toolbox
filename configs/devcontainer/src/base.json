@@ -1,0 +1,16 @@
+{
+  "name": "${projectName}",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "postCreateCommand": {
+    "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest"
+  },
+  "mounts": [
+    { "source_suffix": ".ssh", "target_suffix": ".ssh", "type": "bind", "options": "readonly" },
+    { "source_suffix": ".claude", "target_suffix": ".claude", "type": "bind", "options": "consistency=cached" },
+    { "source_suffix": ".claude.json", "target_suffix": ".claude.json", "type": "bind", "options": "consistency=cached" }
+  ],
+  "forwardPorts": []
+}

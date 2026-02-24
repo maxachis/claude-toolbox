@@ -218,6 +218,19 @@ do_link() {
   # Merge global settings
   merge_settings "$SETTINGS_SRC" "$SETTINGS_DEST"
 
+  # On WSL, set up symlinks from WSL home to Windows home for devcontainer mounts
+  local wsl_setup="${SCRIPT_DIR}/configs/devcontainer/wsl-setup.sh"
+  if [[ -f /proc/version ]] && grep -qi microsoft /proc/version 2>/dev/null; then
+    echo ""
+    if [[ -x "$wsl_setup" ]]; then
+      info "WSL detected — running devcontainer WSL setup..."
+      "$wsl_setup"
+    else
+      warn "WSL detected but wsl-setup.sh not found — skipping"
+      warn "Devcontainer mounts may not resolve correctly. See configs/devcontainer/README.md"
+    fi
+  fi
+
   echo ""
   info "Done! Your toolbox is linked to ${CLAUDE_DIR}"
 }

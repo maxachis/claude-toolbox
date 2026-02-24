@@ -47,3 +47,7 @@ Brief description.
 - Keep rules and skills concise — bullet points over paragraphs
 - Update the relevant `_index.md` or `README.md` when adding or removing components
 - Cross-reference related components where appropriate
+
+## Generated Files
+
+- **Devcontainer templates** (`configs/devcontainer/*.jsonc`) are auto-generated. Do not edit them directly — edit `configs/devcontainer/src/` and run `./configs/devcontainer/generate.sh` to regenerate.

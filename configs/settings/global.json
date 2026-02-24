@@ -26,7 +26,11 @@
       "Bash(docker:*)",
       "Bash(devcontainer build:*)",
       "Bash(head:*)",
-      "Bash(devcontainer read-configuration:*)"
+      "Bash(devcontainer read-configuration:*)",
+      "Bash(devcontainer up:*)",
+      "Bash(tail:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)"
     ]
   }
 }

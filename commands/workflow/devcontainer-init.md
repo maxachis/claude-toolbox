@@ -24,7 +24,7 @@ If multiple indicators are found, prefer the one matching `$ARGUMENTS`, or ask t
 
 ### Step 3: Copy template
 
-Read the matching template from the toolbox at `configs/devcontainer/{type}.jsonc`. Create `.devcontainer/` in the project root and write the template as `.devcontainer/devcontainer.json`.
+Read the matching template from `~/.claude/configs/devcontainer/{type}.jsonc`. Create `.devcontainer/` in the project root and write the template as `.devcontainer/devcontainer.json`.
 
 ### Step 4: Customize
 
