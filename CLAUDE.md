@@ -48,6 +48,11 @@ Brief description.
 - Update the relevant `_index.md` or `README.md` when adding or removing components
 - Cross-reference related components where appropriate
 
+## Shell Scripts
+
+- **`setup.sh`** — Links the toolbox (`commands/`, `skills/`, `agents/`, `CLAUDE.md`) into `~/.claude/` and merges `configs/settings/global.json` into `~/.claude/settings.json`. Runs `validate.sh` first. Flags: `--unlink` (remove links, restore backups), `--skip-validation` (bypass agent validation). On WSL, also runs `configs/devcontainer/wsl-setup.sh`.
+- **`validate.sh`** — Validates agent frontmatter in `agents/`. Checks required fields (`name`, `description`), name format, tool/model/permissionMode values, and name-filename consistency. Requires Python. Accepts an optional directory argument (defaults to `agents/`).
+
 ## Generated Files
 
 - **Devcontainer templates** (`configs/devcontainer/*.jsonc`) are auto-generated. Do not edit them directly — edit `configs/devcontainer/src/` and run `./configs/devcontainer/generate.sh` to regenerate.

@@ -22,9 +22,15 @@ If `$ARGUMENTS` specifies a type, use it. Otherwise detect from project files:
 
 If multiple indicators are found, prefer the one matching `$ARGUMENTS`, or ask the user. If no type can be determined, ask the user to specify one.
 
-### Step 3: Copy template
+### Step 3: Copy template verbatim
 
-Read the matching template from `~/.claude/configs/devcontainer/{type}.jsonc`. Create `.devcontainer/` in the project root and write the template as `.devcontainer/devcontainer.json`.
+**You MUST use the template file as the source of truth.** Do NOT generate a devcontainer config from memory or general knowledge.
+
+1. Use the Read tool to read `~/.claude/configs/devcontainer/{type}.jsonc` in full
+2. Create the `.devcontainer/` directory in the project root
+3. Write the **exact contents** of the template file to `.devcontainer/devcontainer.json`, stripping only the leading `// AUTO-GENERATED` and comment header lines
+
+The templates contain pre-configured features, mounts, postCreateCommand entries (including CLI tool installs), extensions, and settings that must all be preserved. Do not omit, rephrase, or regenerate any part of the template.
 
 ### Step 4: Verify credential mounts
 
@@ -48,10 +54,10 @@ Run these checks:
 
 ### Step 5: Customize
 
-Apply these project-specific customizations to the copied file:
+Apply targeted edits to the copied template file. **Do not rewrite or regenerate the file** — only modify the specific fields listed below. All other content (features, mounts, CLI tool installs, extensions, settings) must remain exactly as copied from the template.
 
 1. **Project name**: Replace `${projectName}` with the current directory name
-2. **Post-create command**: Inspect the project and adjust:
+2. **Post-create `project-deps` command**: Edit only the `project-deps` entry in `postCreateCommand`. Leave `cli-tools` and any other entries unchanged. Adjust based on project:
    - Python: use `uv sync` if `uv.lock` exists, `pip install -r requirements.txt` if `requirements.txt` exists, `pip install -e '.[dev]'` if `pyproject.toml` exists
    - Node: use `pnpm install` if `pnpm-lock.yaml` exists, `bun install` if `bun.lockb` exists, otherwise `npm install`
    - Rust: keep `cargo build` as default
