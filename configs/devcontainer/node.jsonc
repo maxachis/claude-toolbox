@@ -32,10 +32,14 @@
     "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest",
     "project-deps": "npm install"
   },
+  "containerEnv": {
+    "TZ": "America/New_York"
+  },
   "mounts": [
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached"
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/gh,target=/home/node/.config/gh,type=bind,readonly"
   ],
   "forwardPorts": [],
   "remoteUser": "node"

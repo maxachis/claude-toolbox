@@ -10,7 +10,11 @@
   "mounts": [
     { "source_suffix": ".ssh", "target_suffix": ".ssh", "type": "bind", "options": "readonly" },
     { "source_suffix": ".claude", "target_suffix": ".claude", "type": "bind", "options": "consistency=cached" },
-    { "source_suffix": ".claude.json", "target_suffix": ".claude.json", "type": "bind", "options": "consistency=cached" }
+    { "source_suffix": ".claude.json", "target_suffix": ".claude.json", "type": "bind", "options": "consistency=cached" },
+    { "source_suffix": ".config/gh", "target_suffix": ".config/gh", "type": "bind", "options": "readonly" }
   ],
+  "containerEnv": {
+    "TZ": "America/New_York"
+  },
   "forwardPorts": []
 }

@@ -109,6 +109,7 @@ output["image"] = override["image"]
 output["features"] = features
 output["customizations"] = override["customizations"]
 output["postCreateCommand"] = post_create
+output["containerEnv"] = {**base.get("containerEnv", {}), **override.get("containerEnv", {})}
 output["mounts"] = mount_strings
 output["forwardPorts"] = base.get("forwardPorts", [])
 output["remoteUser"] = remote_user
