@@ -1,3 +1,8 @@
+---
+description: Generate or update documentation for code
+argument-hint: "<file, function, or module>"
+---
+
 # Generate Documentation
 
 Generate or update documentation for code.

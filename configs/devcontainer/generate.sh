@@ -105,10 +105,14 @@ for m in base.get("mounts", []):
 # --- Assemble output ---
 output = OrderedDict()
 output["name"] = base["name"]
+if "initializeCommand" in base:
+    output["initializeCommand"] = base["initializeCommand"]
 output["image"] = override["image"]
 output["features"] = features
 output["customizations"] = override["customizations"]
 output["postCreateCommand"] = post_create
+if "runArgs" in base or "runArgs" in override:
+    output["runArgs"] = base.get("runArgs", []) + [a for a in override.get("runArgs", []) if a not in base.get("runArgs", [])]
 output["containerEnv"] = {**base.get("containerEnv", {}), **override.get("containerEnv", {})}
 output["mounts"] = mount_strings
 output["forwardPorts"] = base.get("forwardPorts", [])

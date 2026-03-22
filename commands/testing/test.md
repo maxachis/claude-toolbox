@@ -1,3 +1,8 @@
+---
+description: Generate tests for the specified code
+argument-hint: "<file or function to test>"
+---
+
 # Generate Tests
 
 Generate tests for the specified code.

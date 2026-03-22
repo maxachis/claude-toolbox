@@ -27,6 +27,8 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/doc` | [documentation](documentation/) | Generate or update documentation |
 | `/explain` | [documentation](documentation/) | Explain how code works |
 | `/refactor` | [refactoring](refactoring/) | Refactor code to improve quality |
+| `/apply` | [workflow](workflow/) | Pull rules, conventions, or bundles from the toolbox into the project |
+| `/capture` | [workflow](workflow/) | Analyze project for reusable patterns and capture them into the toolbox |
 | `/devcontainer-init` | [workflow](workflow/) | Scaffold a `.devcontainer/` setup for the current project |
 | `/session-review` | [workflow](workflow/) | Analyze session for inefficiencies and suggest improvements |
 
@@ -79,6 +81,8 @@ Commands for code improvement.
 
 ### [Workflow](workflow/)
 Commands for workflow automation and session analysis.
+- `apply` - Pull rules, conventions, or bundles from the toolbox into the project
+- `capture` - Analyze project for reusable patterns and capture them into the toolbox
 - `devcontainer-init` - Scaffold a devcontainer setup for the current project
 - `session-review` - Analyze conversation for inefficiencies and suggest improvements
 

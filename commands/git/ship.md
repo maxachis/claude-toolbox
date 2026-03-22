@@ -1,3 +1,8 @@
+---
+description: Stage, commit, and push changes in one step
+argument-hint: "<'commit' or commit message>"
+---
+
 # Ship
 
 Stage, commit, and push changes in one step.

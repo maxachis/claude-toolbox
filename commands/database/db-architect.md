@@ -1,3 +1,8 @@
+---
+description: Design and improve database schemas and structure
+argument-hint: "<data to model or schema to review>"
+---
+
 # Database Architect
 
 Design and improve database schemas and structure.

@@ -1,3 +1,8 @@
+---
+description: Implement authentication and authorization flows
+argument-hint: "<auth feature>"
+---
+
 # Authentication Implementation
 
 Implement authentication and authorization flows.

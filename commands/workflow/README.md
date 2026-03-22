@@ -6,6 +6,8 @@ Commands for analyzing and improving Claude Code session efficiency.
 
 | Command | Description |
 |---------|-------------|
+| `apply` | Pull rules, conventions, or bundles from the toolbox into the current project |
+| `capture` | Analyze project for reusable patterns and capture them into the toolbox |
 | `devcontainer-init` | Scaffold a `.devcontainer/` setup for the current project |
 | `session-review` | Analyze conversation for inefficiencies and suggest improvements |
 

@@ -1,3 +1,8 @@
+---
+description: Help with CSS, styling issues, and design implementation
+argument-hint: "<styling task>"
+---
+
 # Styling Helper
 
 Help with CSS, styling issues, and design implementation.

@@ -1,3 +1,8 @@
+---
+description: Generate or update API documentation
+argument-hint: "<endpoint or 'all'>"
+---
+
 # API Documentation Generator
 
 Generate or update API documentation.

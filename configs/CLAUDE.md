@@ -5,6 +5,18 @@
 
 When committing to git, default to ssh rather than HTTPS.
 
+## Test-Driven Development
+
+When implementing new functionality or fixing bugs, follow red-green TDD:
+
+1. **Red**: Write a failing test that defines the expected behavior before writing any implementation code.
+2. **Green**: Write the minimum implementation code to make the test pass.
+3. **Refactor**: Clean up the implementation while keeping tests green.
+
+- Run the failing test first to confirm it fails for the right reason.
+- Do not write implementation code without a corresponding test.
+- Keep the red-green-refactor cycles small and focused.
+
 ## Learning from Mistakes
 
 ### When to record a mistake

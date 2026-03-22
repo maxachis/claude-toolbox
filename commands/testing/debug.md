@@ -1,3 +1,8 @@
+---
+description: Help diagnose and fix a bug or issue
+argument-hint: "<problem description or error message>"
+---
+
 # Debug Issue
 
 Help diagnose and fix a bug or issue.

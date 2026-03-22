@@ -1,3 +1,8 @@
+---
+description: Analyze conversation to identify inefficiencies and improvements
+argument-hint: "<focus area>"
+---
+
 # Session Review
 
 Analyze the current conversation to identify inefficiencies and suggest durable improvements.

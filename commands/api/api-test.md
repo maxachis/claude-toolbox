@@ -1,3 +1,8 @@
+---
+description: Generate integration tests for API endpoints
+argument-hint: "<endpoint to test>"
+---
+
 # API Test Generator
 
 Generate integration tests for API endpoints.

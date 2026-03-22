@@ -1,20 +1,25 @@
 {
   "name": "${projectName}",
+  "initializeCommand": "token=$(gh auth token 2>/dev/null) && echo \"GH_TOKEN=$token\" > .devcontainer/.env.secrets || : > .devcontainer/.env.secrets",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "postCreateCommand": {
-    "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest"
+    "cli-tools": "npm install -g @anthropic-ai/claude-code @fission-ai/openspec@latest",
+    "claude-toolbox": "if [ -x \"$HOME/.claude/toolbox/bin/claude-toolbox\" ]; then mkdir -p \"$HOME/.local/bin\" && ln -sf \"$HOME/.claude/toolbox/bin/claude-toolbox\" \"$HOME/.local/bin/claude-toolbox\"; fi"
   },
   "mounts": [
     { "source_suffix": ".ssh", "target_suffix": ".ssh", "type": "bind", "options": "readonly" },
     { "source_suffix": ".claude", "target_suffix": ".claude", "type": "bind", "options": "consistency=cached" },
     { "source_suffix": ".claude.json", "target_suffix": ".claude.json", "type": "bind", "options": "consistency=cached" },
-    { "source_suffix": ".config/gh", "target_suffix": ".config/gh", "type": "bind", "options": "readonly" }
+    { "source_suffix": ".config/gh", "target_suffix": ".config/gh", "type": "bind", "options": "readonly" },
+    { "source_suffix": ".claude/toolbox", "target_suffix": ".claude/toolbox", "type": "bind", "options": "readonly" }
   ],
+  "runArgs": ["--env-file", ".devcontainer/.env.secrets"],
   "containerEnv": {
     "TZ": "America/New_York"
   },
   "forwardPorts": []
 }
+

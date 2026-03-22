@@ -1,3 +1,8 @@
+---
+description: Implement an API endpoint
+argument-hint: "<METHOD /path description>"
+---
+
 # API Endpoint Implementation
 
 Implement an API endpoint.

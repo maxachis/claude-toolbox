@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+#
+# claude-toolbox — Unified CLI for the Claude Code toolbox
+#
+
+set -euo pipefail
+
+VERSION="0.1.0"
+
+# Resolve the toolbox root (parent of bin/), following symlinks
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+while [[ -L "$SCRIPT_PATH" ]]; do
+  SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+  SCRIPT_PATH="$(readlink "$SCRIPT_PATH")"
+  [[ "$SCRIPT_PATH" != /* ]] && SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT_PATH"
+done
+TOOLBOX_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
+LIB_DIR="${TOOLBOX_ROOT}/lib/claude-toolbox"
+
+# Source shared functions
+# shellcheck source=../lib/claude-toolbox/common.sh
+source "${LIB_DIR}/common.sh"
+
+# Export for use by command modules
+export TOOLBOX_ROOT VERSION
+
+usage() {
+  cat << 'EOF'
+claude-toolbox — Manage Claude Code toolbox components and installation.
+
+Usage: claude-toolbox <command> [options]
+
+Setup:
+  install [--skip-validation]   Link toolbox into ~/.claude/ and merge settings
+  uninstall                     Remove links and restore backups
+  status                        Show link health, settings, credentials, component counts
+                                Exit code: 0 = all OK, 1 = errors found
+
+Components:
+  list [type]                   List components with descriptions
+                                Types: agents, commands, plugins, skills (default: all)
+  add agent <name>              Scaffold agent .md with frontmatter template,
+                                insert row into agents/_index.md alphabetically
+  add command <category/name>   Scaffold command .md with template,
+                                create category dir + README.md if new,
+                                insert rows into commands/_index.md and category README
+  remove agent <name> [-f]      Delete agent .md, remove row from _index.md
+  remove command <cat/name> [-f] Delete command .md, remove rows from catalogs
+  validate [directory]          Validate agent YAML frontmatter (requires Python)
+
+Knowledge:
+  apply rule <name> [-f]        Copy project-type template → ./CLAUDE.md
+  apply convention <name> [-f]  Copy convention snippet → .claude/rules/<name>.md
+  apply bundle <name> [-f]      Copy bundle CLAUDE.md + commands into project
+  apply --list [type]           List available rules/conventions/bundles
+  capture rule <name> [-f]      Save ./CLAUDE.md as project-type template
+  capture convention <name> [-f] Save .claude/rules/ file as reusable convention
+  capture command <cat/name> [-f] Copy .claude/commands/ file into toolbox
+  capture skill <cat/name> [-f]  Copy .claude/skills/ file into toolbox
+
+Devcontainer:
+  devcontainer init [--lang L]  Copy .jsonc template into .devcontainer/devcontainer.json
+                                Auto-detects language from project files if --lang omitted
+                                Supported: python, node, rust
+  devcontainer check            Verify mounts and credentials inside a running container
+  devcontainer generate [L...]  Regenerate .jsonc templates from src/ configs
+
+Options:
+  -h, --help      Show this help message
+  --version       Show version number
+
+Names must be lowercase with hyphens (e.g., my-agent, api/new-endpoint).
+
+Examples:
+  claude-toolbox install                          # Link toolbox into ~/.claude/
+  claude-toolbox status                           # Check health of all links
+  claude-toolbox list agents                      # Show agents with descriptions
+  claude-toolbox add agent code-reviewer          # Scaffold a new agent
+  claude-toolbox add command testing/snapshot      # Scaffold a new command
+  claude-toolbox remove agent code-reviewer -f    # Remove without confirmation
+  claude-toolbox apply --list                          # List available rules/conventions/bundles
+  claude-toolbox apply rule python-project              # Copy template to ./CLAUDE.md
+  claude-toolbox apply convention commit-messages       # Copy to .claude/rules/
+  claude-toolbox capture rule my-project                # Save CLAUDE.md as template
+  claude-toolbox capture command api/my-endpoint        # Copy command into toolbox
+  claude-toolbox devcontainer init --lang python  # Init devcontainer from template
+
+Run 'claude-toolbox <command> --help' for command-specific help.
+EOF
+}
+
+# --- Main dispatcher ---
+
+cmd="${1:-}"
+
+case "$cmd" in
+  ""|-h|--help|help)
+    usage
+    exit 0
+    ;;
+  --version)
+    echo "$VERSION"
+    exit 0
+    ;;
+  install|uninstall)
+    source "${LIB_DIR}/cmd-install.sh"
+    shift
+    cmd_install "$cmd" "$@"
+    ;;
+  status)
+    source "${LIB_DIR}/cmd-status.sh"
+    shift
+    cmd_status "$@"
+    ;;
+  validate)
+    source "${LIB_DIR}/cmd-validate.sh"
+    shift
+    cmd_validate "$@"
+    ;;
+  list)
+    source "${LIB_DIR}/cmd-list.sh"
+    shift
+    cmd_list "$@"
+    ;;
+  add)
+    source "${LIB_DIR}/cmd-add.sh"
+    shift
+    cmd_add "$@"
+    ;;
+  remove)
+    source "${LIB_DIR}/cmd-remove.sh"
+    shift
+    cmd_remove "$@"
+    ;;
+  apply)
+    source "${LIB_DIR}/cmd-apply.sh"
+    shift
+    cmd_apply "$@"
+    ;;
+  capture)
+    source "${LIB_DIR}/cmd-capture.sh"
+    shift
+    cmd_capture "$@"
+    ;;
+  devcontainer)
+    source "${LIB_DIR}/cmd-devcontainer.sh"
+    shift
+    cmd_devcontainer "$@"
+    ;;
+  *)
+    error "Unknown command: $cmd"
+    echo ""
+    usage
+    exit 1
+    ;;
+esac

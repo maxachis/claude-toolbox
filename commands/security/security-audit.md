@@ -1,3 +1,8 @@
+---
+description: Audit code for security vulnerabilities
+argument-hint: "<file, feature, or 'full'>"
+---
+
 # Security Audit
 
 Audit code for security vulnerabilities.

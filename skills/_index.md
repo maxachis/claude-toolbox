@@ -23,6 +23,7 @@ Development practices and methodologies.
 - Test-driven development (TDD)
 - Code review guidelines
 - Git workflow standards
+- Token-efficient Playwright MCP usage
 
 ## Installation
 

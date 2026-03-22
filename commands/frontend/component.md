@@ -1,3 +1,8 @@
+---
+description: Create UI components following project patterns
+argument-hint: "<component description>"
+---
+
 # Component Creator
 
 Create UI components following project patterns.

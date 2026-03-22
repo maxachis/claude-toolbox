@@ -1,3 +1,8 @@
+---
+description: Scaffold a devcontainer.json for the current project
+argument-hint: "<python|node|rust>"
+---
+
 # Devcontainer Init
 
 Scaffold a `.devcontainer/devcontainer.json` for the current project by detecting the project type and copying the appropriate template.
@@ -29,6 +34,7 @@ If multiple indicators are found, prefer the one matching `$ARGUMENTS`, or ask t
 1. Use the Read tool to read `~/.claude/configs/devcontainer/{type}.jsonc` in full
 2. Create the `.devcontainer/` directory in the project root
 3. Write the **exact contents** of the template file to `.devcontainer/devcontainer.json`, stripping only the leading `// AUTO-GENERATED` and comment header lines
+4. Ensure `.devcontainer/.env.secrets` is in the project's `.gitignore` (the template's `initializeCommand` writes `GH_TOKEN` there). If `.gitignore` exists, append the entry if missing. If no `.gitignore` exists, create one with that entry.
 
 The templates contain pre-configured features, mounts, postCreateCommand entries (including CLI tool installs), extensions, and settings that must all be preserved. Do not omit, rephrase, or regenerate any part of the template.
 
@@ -69,11 +75,37 @@ Apply targeted edits to the copied template file. **Do not rewrite or regenerate
    - If a `.env.example`, `.env.sample`, or `.env.template` exists, copy it to `.devcontainer/.env` and add `"runArgs": ["--env-file", ".devcontainer/.env"]` so the container loads it at runtime
    - If only a `.env` exists (no example/template file), do **not** copy it — warn the user that secrets should not be checked in, and suggest they create a `.devcontainer/.env` manually
 
-### Step 6: Validate
+### Step 6: Add devcontainer safety rules to CLAUDE.md
+
+Append a `## Devcontainer Safety` section to the project's `CLAUDE.md` (create the file if it doesn't exist). These rules prevent agents from accidentally killing the container:
+
+```markdown
+## Devcontainer Safety
+
+When running inside a devcontainer, killing processes carelessly will bring down the entire container and destroy your session.
+
+- **NEVER** use broad process-killing commands: `pkill -f`, `killall`, `kill -9 -1`, or `fuser -k` with port wildcards
+- **To free a port**, identify the exact PID first, verify it is not a critical process, then kill only that PID:
+  ```bash
+  # 1. Find the PID
+  lsof -ti :<PORT>
+  # 2. Check what it is before killing
+  ps -p <PID> -o pid,comm,args
+  # 3. Kill only if it's your application process
+  kill <PID>
+  ```
+- **NEVER kill PID 1** — it is the container init process
+- **NEVER kill the VS Code server** or any process with `vscode-server` in its command line
+- If a port is in use and you can't identify the process, ask the user rather than force-killing
+```
+
+If CLAUDE.md already has a `## Devcontainer Safety` section, skip this step.
+
+### Step 7: Validate
 
 Run `devcontainer read-configuration --workspace-folder .` to verify the generated config parses correctly. If the command fails, fix the JSON error and re-validate. If `devcontainer` is not installed, skip this step.
 
-### Step 7: Report
+### Step 8: Report
 
 Show the user:
 - The path to the created file

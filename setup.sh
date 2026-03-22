@@ -14,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_DIR="${HOME}/.claude"
 
 # Directories to link: toolbox_subdir -> ~/.claude/target_name
-LINK_DIRS=("commands" "skills" "agents")
+LINK_DIRS=("commands" "skills" "agents" "configs")
 
 # Settings file to merge into ~/.claude/settings.json
 SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
@@ -218,6 +218,22 @@ do_link() {
   # Merge global settings
   merge_settings "$SETTINGS_SRC" "$SETTINGS_DEST"
 
+  # Link toolbox root into ~/.claude/toolbox (used by devcontainer mounts)
+  local toolbox_link="${CLAUDE_DIR}/toolbox"
+  if is_link "$toolbox_link" && [[ "$(readlink -f "$toolbox_link" 2>/dev/null || true)" == "$(readlink -f "$SCRIPT_DIR" 2>/dev/null || true)" ]]; then
+    info "toolbox/ already linked"
+  else
+    if is_link "$toolbox_link"; then
+      remove_link "$toolbox_link"
+    elif [[ -d "$toolbox_link" ]]; then
+      warn "toolbox/ exists and is not a symlink — skipping"
+    fi
+    if [[ ! -e "$toolbox_link" ]]; then
+      create_link "$SCRIPT_DIR" "$toolbox_link"
+      info "toolbox/ linked (for devcontainer CLI access)"
+    fi
+  fi
+
   # On WSL, set up symlinks from WSL home to Windows home for devcontainer mounts
   local wsl_setup="${SCRIPT_DIR}/configs/devcontainer/wsl-setup.sh"
   if [[ -f /proc/version ]] && grep -qi microsoft /proc/version 2>/dev/null; then
@@ -228,6 +244,29 @@ do_link() {
     else
       warn "WSL detected but wsl-setup.sh not found — skipping"
       warn "Devcontainer mounts may not resolve correctly. See configs/devcontainer/README.md"
+    fi
+  fi
+
+  # Symlink CLI into ~/.local/bin/
+  local cli_src="${SCRIPT_DIR}/bin/claude-toolbox"
+  local cli_dest="${HOME}/.local/bin/claude-toolbox"
+  if [[ -x "$cli_src" ]]; then
+    mkdir -p "${HOME}/.local/bin"
+    if is_link "$cli_dest" && [[ "$(readlink -f "$cli_dest" 2>/dev/null || true)" == "$(readlink -f "$cli_src" 2>/dev/null || true)" ]]; then
+      info "CLI already linked"
+    else
+      if is_link "$cli_dest"; then
+        remove_link "$cli_dest"
+      elif [[ -f "$cli_dest" ]]; then
+        warn "CLI exists at ${cli_dest} — overwriting"
+        rm "$cli_dest"
+      fi
+      create_link "$cli_src" "$cli_dest"
+      info "CLI linked to ${cli_dest}"
+    fi
+    # Warn if ~/.local/bin is not on PATH
+    if [[ ":${PATH}:" != *":${HOME}/.local/bin:"* ]]; then
+      warn "~/.local/bin is not on your PATH — add it to your shell profile"
     fi
   fi
 
@@ -254,6 +293,20 @@ do_unlink() {
       warn "${dir}/ is not a link — skipping"
     fi
   done
+
+  # Unlink CLI
+  local cli_dest="${HOME}/.local/bin/claude-toolbox"
+  if is_link "$cli_dest"; then
+    remove_link "$cli_dest"
+    info "CLI unlinked"
+  fi
+
+  # Unlink toolbox root
+  local toolbox_link="${CLAUDE_DIR}/toolbox"
+  if is_link "$toolbox_link"; then
+    remove_link "$toolbox_link"
+    info "toolbox/ unlinked"
+  fi
 
   # Unlink CLAUDE.md
   if is_link "$CLAUDE_MD_DEST"; then

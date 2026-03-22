@@ -1,3 +1,8 @@
+---
+description: Create a pull request for the current branch
+argument-hint: "<base branch>"
+---
+
 # Create Pull Request
 
 Create a pull request for the current branch.

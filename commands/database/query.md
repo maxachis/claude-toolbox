@@ -1,3 +1,8 @@
+---
+description: Write and optimize database queries
+argument-hint: "<data needed or query to optimize>"
+---
+
 # Query Developer
 
 Write and optimize database queries.

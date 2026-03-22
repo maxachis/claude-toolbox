@@ -23,11 +23,14 @@ cp agents/*.md .claude/agents/
 | `astro-vue-init` | Astro + Vue islands project setup |
 | `devcontainer-support` | Devcontainer troubleshooting and configuration |
 | `db-architect` | Relational database schema design |
+| `design-auditor` | Design system consistency audits |
+| `ui-reviewer` | UI code review for design best practices |
 | `security-reviewer` | Security audits and vulnerability analysis |
 | `performance-analyst` | Performance optimization and profiling |
 | `pr-reviewer` | Pull request code review |
 | `refactorer` | Code restructuring and cleanup |
 | `test-generator` | Comprehensive test generation |
+| `web-scraper` | Token-efficient web scraping and data extraction (requires Playwright MCP) |
 
 ## How Agents Work
 

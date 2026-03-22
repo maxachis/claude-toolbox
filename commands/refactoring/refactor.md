@@ -1,3 +1,8 @@
+---
+description: Refactor code to improve quality without changing behavior
+argument-hint: "<file or description>"
+---
+
 # Refactor Code
 
 Refactor code to improve quality without changing behavior.

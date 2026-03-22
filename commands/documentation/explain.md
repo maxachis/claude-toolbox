@@ -1,3 +1,8 @@
+---
+description: Explain how code works in detail
+argument-hint: "<file, function, or concept>"
+---
+
 # Explain Code
 
 Provide a detailed explanation of how code works.

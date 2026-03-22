@@ -1,0 +1,15 @@
+{
+  "name": "playwright-mcp",
+  "description": "Playwright MCP server for browser automation",
+  "postCreateCommand": {
+    "playwright": "npx -y playwright install --with-deps chrome"
+  },
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--no-sandbox", "--headless"],
+      "env": {}
+    }
+  }
+}

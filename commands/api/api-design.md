@@ -1,3 +1,8 @@
+---
+description: Design RESTful API endpoints and contracts
+argument-hint: "<feature or resource>"
+---
+
 # API Design
 
 Design RESTful API endpoints and contracts.

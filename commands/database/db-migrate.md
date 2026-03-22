@@ -1,3 +1,8 @@
+---
+description: Generate database migration files for schema changes
+argument-hint: "<schema change description>"
+---
+
 # Database Migration Generator
 
 Generate database migration files for schema changes.

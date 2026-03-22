@@ -1,3 +1,8 @@
+---
+description: Review code for issues and improvements
+argument-hint: "<file or description>"
+---
+
 # Code Review
 
 Review the specified code for issues and improvements.
