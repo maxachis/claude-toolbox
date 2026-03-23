@@ -228,3 +228,91 @@ teardown() {
   run "$LOCAL_CLI" capture rule
   [ "$status" -eq 1 ]
 }
+
+# --- Capture pattern ---
+
+@test "capture pattern copies .claude/patterns/ file to toolbox" {
+  mkdir -p "$PROJECT_DIR/.claude/patterns"
+  cat > "$PROJECT_DIR/.claude/patterns/glossary-component.md" << 'EOF'
+---
+description: A reusable glossary
+tags: [frontend, component]
+---
+# Glossary Component
+EOF
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/_index.md" << 'EOF'
+# Patterns Index
+
+## Available Patterns
+
+| Pattern | Tags | Description |
+|---------|------|-------------|
+EOF
+  run "$LOCAL_CLI" capture pattern glossary-component
+  [ "$status" -eq 0 ]
+  [ -f "$TOOLBOX_ROOT/patterns/glossary-component.md" ]
+  [[ "$(cat "$TOOLBOX_ROOT/patterns/glossary-component.md")" == *"Glossary Component"* ]]
+}
+
+@test "capture pattern updates _index.md" {
+  mkdir -p "$PROJECT_DIR/.claude/patterns" "$TOOLBOX_ROOT/patterns"
+  cat > "$PROJECT_DIR/.claude/patterns/glossary-component.md" << 'EOF'
+---
+description: A reusable glossary
+tags: [frontend, component]
+---
+# Glossary
+EOF
+  cat > "$TOOLBOX_ROOT/patterns/_index.md" << 'EOF'
+# Patterns Index
+
+## Available Patterns
+
+| Pattern | Tags | Description |
+|---------|------|-------------|
+EOF
+  run "$LOCAL_CLI" capture pattern glossary-component
+  [ "$status" -eq 0 ]
+  run cat "$TOOLBOX_ROOT/patterns/_index.md"
+  [[ "$output" == *"glossary-component"* ]]
+}
+
+@test "capture pattern fails when source missing" {
+  run "$LOCAL_CLI" capture pattern nonexistent
+  [ "$status" -eq 1 ]
+}
+
+@test "capture pattern blocks overwrite without --force" {
+  mkdir -p "$PROJECT_DIR/.claude/patterns" "$TOOLBOX_ROOT/patterns"
+  echo "# New" > "$PROJECT_DIR/.claude/patterns/glossary-component.md"
+  echo "# Old" > "$TOOLBOX_ROOT/patterns/glossary-component.md"
+  run "$LOCAL_CLI" capture pattern glossary-component
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"already exists"* ]]
+}
+
+@test "capture pattern overwrites with --force" {
+  mkdir -p "$PROJECT_DIR/.claude/patterns" "$TOOLBOX_ROOT/patterns"
+  echo "# Updated" > "$PROJECT_DIR/.claude/patterns/glossary-component.md"
+  echo "# Old" > "$TOOLBOX_ROOT/patterns/glossary-component.md"
+  run "$LOCAL_CLI" capture pattern glossary-component --force
+  [ "$status" -eq 0 ]
+  [[ "$(cat "$TOOLBOX_ROOT/patterns/glossary-component.md")" == *"Updated"* ]]
+}
+
+@test "capture pattern --from uses explicit source path" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/_index.md" << 'EOF'
+# Patterns Index
+
+## Available Patterns
+
+| Pattern | Tags | Description |
+|---------|------|-------------|
+EOF
+  echo "# Custom Pattern" > "$PROJECT_DIR/my-pattern.md"
+  run "$LOCAL_CLI" capture pattern custom-pattern --from "$PROJECT_DIR/my-pattern.md"
+  [ "$status" -eq 0 ]
+  [[ "$(cat "$TOOLBOX_ROOT/patterns/custom-pattern.md")" == *"Custom Pattern"* ]]
+}

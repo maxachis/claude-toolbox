@@ -90,3 +90,76 @@ teardown() {
   [ "$status" -eq 1 ]
   [[ "$output" == *"Unknown"* ]]
 }
+
+# --- Patterns ---
+
+@test "list patterns shows pattern names and descriptions" {
+  # Create mock patterns
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/glossary-component.md" << 'PATEOF'
+---
+description: A reusable glossary with alphabetical index
+tags: [frontend, component, reference]
+---
+# Glossary Component
+PATEOF
+  cat > "$TOOLBOX_ROOT/patterns/search-index.md" << 'PATEOF'
+---
+description: Client-side search index generation
+tags: [frontend, search]
+---
+# Search Index
+PATEOF
+
+  run "$LOCAL_CLI" list patterns
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Patterns:"* ]]
+  [[ "$output" == *"glossary-component"* ]]
+  [[ "$output" == *"A reusable glossary"* ]]
+  [[ "$output" == *"search-index"* ]]
+}
+
+@test "list patterns --tag filters by tag" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/glossary-component.md" << 'PATEOF'
+---
+description: A reusable glossary with alphabetical index
+tags: [frontend, component, reference]
+---
+# Glossary Component
+PATEOF
+  cat > "$TOOLBOX_ROOT/patterns/db-seed.md" << 'PATEOF'
+---
+description: Database seeding strategy
+tags: [backend, database]
+---
+# DB Seed
+PATEOF
+
+  run "$LOCAL_CLI" list patterns --tag frontend
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"glossary-component"* ]]
+  [[ "$output" != *"db-seed"* ]]
+}
+
+@test "list patterns --tag with no matches shows none" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/glossary-component.md" << 'PATEOF'
+---
+description: A glossary
+tags: [frontend]
+---
+# Glossary
+PATEOF
+
+  run "$LOCAL_CLI" list patterns --tag nonexistent
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(none)"* ]]
+}
+
+@test "list patterns with empty directory shows none" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  run "$LOCAL_CLI" list patterns
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(none)"* ]]
+}

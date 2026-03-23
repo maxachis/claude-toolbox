@@ -14,6 +14,7 @@ claude-toolbox/
 ├── agents/         # Custom subagent definitions (YAML frontmatter + markdown)
 ├── plugins/        # Installable bundles with plugin.json manifests
 ├── rules/          # CLAUDE.md templates (project-types/) and convention snippets (conventions/)
+├── patterns/       # Reusable code structure recipes (YAML frontmatter + markdown)
 ├── configs/        # Settings, keybindings, and MCP server templates
 ├── bundles/        # Curated role-based component collections
 └── docs/           # Project documentation
@@ -43,6 +44,8 @@ Brief description.
 
 **Rules** are organized as project-type templates or standalone convention snippets with concise bullet-point guidelines.
 
+**Patterns** are flat files in `patterns/` with YAML frontmatter (`description`, `tags`) containing reusable code structure recipes. The `_index.md` uses a 3-column table (Pattern, Tags, Description). Applied to `.claude/patterns/` in target projects.
+
 ## Editing Guidelines
 
 - Preserve existing format conventions when editing or adding components
@@ -61,7 +64,8 @@ The `claude-toolbox` CLI (`bin/claude-toolbox`) provides a unified interface for
 | `claude-toolbox uninstall` | Remove links and restore backups |
 | `claude-toolbox status` | Show link health, settings, credentials, component counts |
 | `claude-toolbox validate` | Validate agent frontmatter (delegates to `validate.sh`) |
-| `claude-toolbox list [type]` | List components (agents, commands, plugins, skills) |
+| `claude-toolbox list [type]` | List components (agents, commands, plugins, skills, patterns) |
+| `claude-toolbox list patterns [--tag <tag>]` | List patterns, optionally filtered by tag |
 | `claude-toolbox add agent <name>` | Scaffold agent .md, update `_index.md` |
 | `claude-toolbox add command <cat/name>` | Scaffold command .md, update catalogs |
 | `claude-toolbox remove agent <name>` | Remove agent, update `_index.md` |
@@ -69,11 +73,13 @@ The `claude-toolbox` CLI (`bin/claude-toolbox`) provides a unified interface for
 | `claude-toolbox apply rule <name>` | Copy project-type template → `./CLAUDE.md` |
 | `claude-toolbox apply convention <name>` | Copy convention snippet → `.claude/rules/` |
 | `claude-toolbox apply bundle <name>` | Copy bundle CLAUDE.md + commands into project |
-| `claude-toolbox apply --list [type]` | List available rules/conventions/bundles |
+| `claude-toolbox apply pattern <name>` | Copy pattern recipe → `.claude/patterns/` |
+| `claude-toolbox apply --list [type]` | List available rules/conventions/bundles/patterns |
 | `claude-toolbox capture rule <name>` | Save `./CLAUDE.md` as project-type template |
 | `claude-toolbox capture convention <name>` | Save `.claude/rules/` file as reusable convention |
 | `claude-toolbox capture command <cat/name>` | Copy `.claude/commands/` file into toolbox |
 | `claude-toolbox capture skill <cat/name>` | Copy `.claude/skills/` file into toolbox |
+| `claude-toolbox capture pattern <name>` | Copy `.claude/patterns/` file into toolbox |
 | `claude-toolbox devcontainer init [--lang X] [--with addon]` | Copy template into `.devcontainer/`, optionally apply addons |
 | `claude-toolbox devcontainer check` | Verify mounts/credentials inside a container |
 | `claude-toolbox devcontainer generate [lang...]` | Regenerate `.jsonc` templates |
@@ -93,6 +99,10 @@ Tests use [bats-core](https://github.com/bats-core/bats-core) (git submodule in 
 ./tests/bats/bin/bats tests/          # Run all tests
 ./tests/bats/bin/bats tests/cli.bats  # Run specific test file
 ```
+
+## Workflow
+
+- After any substantial change is completed, commit and push.
 
 ## Generated Files
 

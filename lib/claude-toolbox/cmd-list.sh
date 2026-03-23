@@ -15,6 +15,10 @@ Types:
   commands    Show commands grouped by category
   plugins     Show plugins with descriptions from plugin.json
   skills      Show skills organized by subdirectory
+  patterns    Show patterns with descriptions from frontmatter
+
+Options (patterns only):
+  --tag <tag>   Filter patterns by tag
 
 If no type is given, shows all.
 EOF
@@ -22,12 +26,14 @@ EOF
   fi
 
   local type="${1:-all}"
+  shift 2>/dev/null || true
 
   case "$type" in
-    agents)  list_agents ;;
+    agents)   list_agents ;;
     commands) list_commands ;;
-    plugins) list_plugins ;;
-    skills)  list_skills ;;
+    plugins)  list_plugins ;;
+    skills)   list_skills ;;
+    patterns) list_patterns "$@" ;;
     all)
       list_agents
       echo ""
@@ -36,10 +42,12 @@ EOF
       list_plugins
       echo ""
       list_skills
+      echo ""
+      list_patterns
       ;;
     *)
       error "Unknown component type: $type"
-      echo "Valid types: agents, commands, plugins, skills"
+      echo "Valid types: agents, commands, plugins, skills, patterns"
       return 1
       ;;
   esac
@@ -168,6 +176,64 @@ list_skills() {
       printf "    %-22s %s\n" "$name" "$desc"
       found=1
     done
+  done
+
+  if [[ $found -eq 0 ]]; then echo "  (none)"; fi
+}
+
+list_patterns() {
+  local dir="${TOOLBOX_ROOT}/patterns"
+  local tag_filter=""
+
+  # Parse --tag flag
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --tag) shift; tag_filter="${1:-}" ;;
+    esac
+    shift
+  done
+
+  echo "${BOLD}Patterns:${NC}"
+
+  if [[ ! -d "$dir" ]]; then
+    echo "  (none)"
+    return
+  fi
+
+  local found=0
+  for file in "$dir"/*.md; do
+    [[ -f "$file" ]] || continue
+    local name
+    name="$(basename "$file" .md)"
+    [[ "$name" == "_index" || "$name" == "README" ]] && continue
+
+    # Parse description and tags from frontmatter
+    local desc="" tags=""
+    desc=$(awk '
+      /^---$/ { if (++c == 2) exit }
+      c == 1 && /^description:/ { sub(/^description:[[:space:]]*/, ""); print }
+    ' "$file")
+    tags=$(awk '
+      /^---$/ { if (++c == 2) exit }
+      c == 1 && /^tags:/ { sub(/^tags:[[:space:]]*/, ""); gsub(/[\[\]]/, ""); print }
+    ' "$file")
+
+    # Apply tag filter if specified
+    if [[ -n "$tag_filter" ]]; then
+      local match=0
+      IFS=',' read -ra tag_array <<< "$tags"
+      for t in "${tag_array[@]}"; do
+        t="$(echo "$t" | xargs)"  # trim whitespace
+        if [[ "$t" == "$tag_filter" ]]; then
+          match=1
+          break
+        fi
+      done
+      [[ $match -eq 0 ]] && continue
+    fi
+
+    printf "  %-24s %s\n" "$name" "$desc"
+    found=1
   done
 
   if [[ $found -eq 0 ]]; then echo "  (none)"; fi

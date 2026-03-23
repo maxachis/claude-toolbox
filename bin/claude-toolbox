@@ -38,7 +38,8 @@ Setup:
 
 Components:
   list [type]                   List components with descriptions
-                                Types: agents, commands, plugins, skills (default: all)
+                                Types: agents, commands, plugins, skills, patterns (default: all)
+  list patterns [--tag <tag>]   List patterns, optionally filtered by tag
   add agent <name>              Scaffold agent .md with frontmatter template,
                                 insert row into agents/_index.md alphabetically
   add command <category/name>   Scaffold command .md with template,
@@ -52,11 +53,13 @@ Knowledge:
   apply rule <name> [-f]        Copy project-type template → ./CLAUDE.md
   apply convention <name> [-f]  Copy convention snippet → .claude/rules/<name>.md
   apply bundle <name> [-f]      Copy bundle CLAUDE.md + commands into project
-  apply --list [type]           List available rules/conventions/bundles
+  apply pattern <name> [-f]     Copy pattern recipe → .claude/patterns/<name>.md
+  apply --list [type]           List available rules/conventions/bundles/patterns
   capture rule <name> [-f]      Save ./CLAUDE.md as project-type template
   capture convention <name> [-f] Save .claude/rules/ file as reusable convention
   capture command <cat/name> [-f] Copy .claude/commands/ file into toolbox
   capture skill <cat/name> [-f]  Copy .claude/skills/ file into toolbox
+  capture pattern <name> [-f]   Copy .claude/patterns/ file into toolbox
 
 Devcontainer:
   devcontainer init [--lang L]  Copy .jsonc template into .devcontainer/devcontainer.json
@@ -83,6 +86,9 @@ Examples:
   claude-toolbox apply convention commit-messages       # Copy to .claude/rules/
   claude-toolbox capture rule my-project                # Save CLAUDE.md as template
   claude-toolbox capture command api/my-endpoint        # Copy command into toolbox
+  claude-toolbox list patterns --tag frontend            # List patterns by tag
+  claude-toolbox apply pattern glossary-component        # Copy pattern to .claude/patterns/
+  claude-toolbox capture pattern glossary-component      # Copy pattern into toolbox
   claude-toolbox devcontainer init --lang python  # Init devcontainer from template
 
 Run 'claude-toolbox <command> --help' for command-specific help.

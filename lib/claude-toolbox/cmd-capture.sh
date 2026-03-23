@@ -15,6 +15,7 @@ Types:
   convention <name>       Save .claude/rules/<name>.md as a reusable convention
   command <category/name> Copy .claude/commands/<cat>/<name>.md into toolbox
   skill <category/name>   Copy .claude/skills/<cat>/<name>.md into toolbox
+  pattern <name>          Copy .claude/patterns/<name>.md into toolbox
 
 Options:
   -f, --force        Skip overwrite confirmations
@@ -39,7 +40,7 @@ EOF
   done
 
   if [[ -z "$type" ]]; then
-    error "Missing type. Usage: claude-toolbox capture <rule|convention|command|skill> <name>"
+    error "Missing type. Usage: claude-toolbox capture <rule|convention|command|skill|pattern> <name>"
     return 1
   fi
 
@@ -53,8 +54,9 @@ EOF
     convention) capture_convention "$name" "$force" "$from_path" ;;
     command)    capture_command "$name" "$force" "$from_path" ;;
     skill)      capture_skill "$name" "$force" "$from_path" ;;
+    pattern)    capture_pattern "$name" "$force" "$from_path" ;;
     *)
-      error "Unknown type: $type. Use 'rule', 'convention', 'command', or 'skill'."
+      error "Unknown type: $type. Use 'rule', 'convention', 'command', 'skill', or 'pattern'."
       return 1
       ;;
   esac
@@ -212,6 +214,35 @@ capture_skill() {
   local index="${TOOLBOX_ROOT}/skills/_index.md"
   if [[ -f "$index" ]]; then
     local row="| \`${name}\` | ${category} | TODO — add description |"
+    insert_table_row "$index" "$row" "$name"
+  fi
+}
+
+capture_pattern() {
+  local name="$1"
+  local force="$2"
+  local from_path="$3"
+  local source="${from_path:-.claude/patterns/${name}.md}"
+  local target="${TOOLBOX_ROOT}/patterns/${name}.md"
+
+  if [[ ! -f "$source" ]]; then
+    error "Pattern source not found at ${source}"
+    return 1
+  fi
+
+  if [[ -f "$target" && "$force" -ne 1 ]]; then
+    error "Pattern '${name}' already exists at ${target}. Use --force to overwrite."
+    return 1
+  fi
+
+  mkdir -p "${TOOLBOX_ROOT}/patterns"
+  cp "$source" "$target"
+  info "Captured pattern '${name}'"
+
+  # Update patterns/_index.md
+  local index="${TOOLBOX_ROOT}/patterns/_index.md"
+  if [[ -f "$index" ]]; then
+    local row="| \`${name}\` | TODO | TODO — add description |"
     insert_table_row "$index" "$row" "$name"
   fi
 }

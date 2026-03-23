@@ -30,6 +30,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/apply` | [workflow](workflow/) | Pull rules, conventions, or bundles from the toolbox into the project |
 | `/capture` | [workflow](workflow/) | Analyze project for reusable patterns and capture them into the toolbox |
 | `/devcontainer-init` | [workflow](workflow/) | Scaffold a `.devcontainer/` setup for the current project |
+| `/pattern` | [workflow](workflow/) | Search, browse, and apply reusable code structure recipes |
 | `/session-review` | [workflow](workflow/) | Analyze session for inefficiencies and suggest improvements |
 
 ## Categories
@@ -84,6 +85,7 @@ Commands for workflow automation and session analysis.
 - `apply` - Pull rules, conventions, or bundles from the toolbox into the project
 - `capture` - Analyze project for reusable patterns and capture them into the toolbox
 - `devcontainer-init` - Scaffold a devcontainer setup for the current project
+- `pattern` - Search, browse, and apply reusable code structure recipes
 - `session-review` - Analyze conversation for inefficiencies and suggest improvements
 
 ## Installation

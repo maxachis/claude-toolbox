@@ -15,6 +15,7 @@ Types:
   rule <name>           Copy a project-type template → ./CLAUDE.md
   convention <name>     Copy a convention snippet → .claude/rules/<name>.md
   bundle <name>         Copy bundle CLAUDE.md + commands into project
+  pattern <name>        Copy a pattern recipe → .claude/patterns/<name>.md
 
 Options:
   --list [type]    List available rules/conventions/bundles
@@ -43,7 +44,7 @@ EOF
   done
 
   if [[ -z "$type" ]]; then
-    error "Missing type. Usage: claude-toolbox apply <rule|convention|bundle> <name>"
+    error "Missing type. Usage: claude-toolbox apply <rule|convention|bundle|pattern> <name>"
     return 1
   fi
 
@@ -56,8 +57,9 @@ EOF
     rule)       apply_rule "$name" "$force" ;;
     convention) apply_convention "$name" "$force" ;;
     bundle)     apply_bundle "$name" "$force" ;;
+    pattern)    apply_pattern "$name" "$force" ;;
     *)
-      error "Unknown type: $type. Use 'rule', 'convention', or 'bundle'."
+      error "Unknown type: $type. Use 'rule', 'convention', 'bundle', or 'pattern'."
       return 1
       ;;
   esac
@@ -102,6 +104,21 @@ apply_list() {
         [[ -d "$d" ]] || continue
         local name
         name="$(basename "$d")"
+        printf "  %s\n" "$name"
+      done
+      echo ""
+    fi
+  fi
+
+  if [[ -z "$filter" || "$filter" == "patterns" ]]; then
+    local patterns_dir="${TOOLBOX_ROOT}/patterns"
+    if [[ -d "$patterns_dir" ]]; then
+      echo "Patterns:"
+      for f in "$patterns_dir"/*.md; do
+        [[ -f "$f" ]] || continue
+        local name
+        name="$(basename "$f" .md)"
+        [[ "$name" == "_index" || "$name" == "README" ]] && continue
         printf "  %s\n" "$name"
       done
       echo ""
@@ -187,4 +204,25 @@ apply_bundle() {
     done
     info "Applied ${count} commands → .claude/commands/"
   fi
+}
+
+apply_pattern() {
+  local name="$1"
+  local force="$2"
+  local source="${TOOLBOX_ROOT}/patterns/${name}.md"
+  local target=".claude/patterns/${name}.md"
+
+  if [[ ! -f "$source" ]]; then
+    error "Pattern '${name}' not found at ${source}"
+    return 1
+  fi
+
+  if [[ -f "$target" && "$force" -ne 1 ]]; then
+    error ".claude/patterns/${name}.md already exists. Use --force to overwrite."
+    return 1
+  fi
+
+  mkdir -p ".claude/patterns"
+  cp "$source" "$target"
+  info "Applied pattern '${name}' → .claude/patterns/${name}.md"
 }

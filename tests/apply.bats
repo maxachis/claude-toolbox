@@ -194,3 +194,68 @@ teardown() {
   run "$LOCAL_CLI" apply rule
   [ "$status" -eq 1 ]
 }
+
+# --- Apply pattern ---
+
+@test "apply pattern copies to .claude/patterns/" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/glossary-component.md" << 'EOF'
+---
+description: A reusable glossary
+tags: [frontend, component]
+---
+# Glossary Component
+Recipe content here.
+EOF
+  run "$LOCAL_CLI" apply pattern glossary-component
+  [ "$status" -eq 0 ]
+  [ -f "$PROJECT_DIR/.claude/patterns/glossary-component.md" ]
+  [[ "$(cat "$PROJECT_DIR/.claude/patterns/glossary-component.md")" == *"Glossary Component"* ]]
+}
+
+@test "apply pattern creates .claude/patterns/ directory" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  cat > "$TOOLBOX_ROOT/patterns/glossary-component.md" << 'EOF'
+---
+description: A glossary
+tags: [frontend]
+---
+# Glossary
+EOF
+  [ ! -d "$PROJECT_DIR/.claude/patterns" ]
+  run "$LOCAL_CLI" apply pattern glossary-component
+  [ "$status" -eq 0 ]
+  [ -d "$PROJECT_DIR/.claude/patterns" ]
+}
+
+@test "apply pattern fails for nonexistent pattern" {
+  run "$LOCAL_CLI" apply pattern nonexistent
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"not found"* ]]
+}
+
+@test "apply pattern blocks overwrite without --force" {
+  mkdir -p "$TOOLBOX_ROOT/patterns" "$PROJECT_DIR/.claude/patterns"
+  echo "# Old" > "$TOOLBOX_ROOT/patterns/glossary-component.md"
+  echo "existing" > "$PROJECT_DIR/.claude/patterns/glossary-component.md"
+  run "$LOCAL_CLI" apply pattern glossary-component
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"already exists"* ]]
+}
+
+@test "apply pattern overwrites with --force" {
+  mkdir -p "$TOOLBOX_ROOT/patterns" "$PROJECT_DIR/.claude/patterns"
+  echo "# New Pattern" > "$TOOLBOX_ROOT/patterns/glossary-component.md"
+  echo "existing" > "$PROJECT_DIR/.claude/patterns/glossary-component.md"
+  run "$LOCAL_CLI" apply pattern glossary-component --force
+  [ "$status" -eq 0 ]
+  [[ "$(cat "$PROJECT_DIR/.claude/patterns/glossary-component.md")" == *"New Pattern"* ]]
+}
+
+@test "apply --list shows patterns" {
+  mkdir -p "$TOOLBOX_ROOT/patterns"
+  echo "# Pat" > "$TOOLBOX_ROOT/patterns/glossary-component.md"
+  run "$LOCAL_CLI" apply --list patterns
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"glossary-component"* ]]
+}
