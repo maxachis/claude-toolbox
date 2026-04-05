@@ -21,8 +21,10 @@ Framework-specific guidance and patterns.
 ### [Practices](practices/)
 Development practices and methodologies.
 - Test-driven development (TDD)
+- Generate-then-separate workflow for AI-assisted code creation
 - Code review guidelines
 - Git workflow standards
+- Cost-efficient PDF scraping protocol
 - Token-efficient Playwright MCP usage
 
 ## Installation
