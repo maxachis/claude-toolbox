@@ -1,2 +1,9 @@
 .vscode/
 .idea/
+
+# Local-only state
+.claude/
+notes.md
+
+# Symlinks to external private projects (machine-specific)
+commands/taskflow/
