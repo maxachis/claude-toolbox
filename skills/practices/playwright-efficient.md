@@ -1,5 +1,9 @@
 # Token-Efficient Playwright MCP Usage
 
+## Configuration
+
+Always run the Playwright MCP server with `--isolated` so each agent gets its own in-memory browser profile. Without it, parallel agents hit "Browser already in use" errors.
+
 ## Tool Selection Hierarchy
 
 Always use the cheapest tool that gets the job done:
