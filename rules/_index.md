@@ -10,12 +10,17 @@ Complete CLAUDE.md templates for different project types.
 - TypeScript/Node projects
 - React applications
 - Vue applications
+- Go projects
+- Vanilla HTML/CSS/JS frontend projects
 
 ### [Conventions](conventions/)
 Reusable rule snippets for common conventions.
 - Commit message format
-- Code style guidelines
+- Code style guidelines (including no-magic-numbers rule)
 - Documentation standards
+- Writable paths for user data (cross-platform config/cache dirs)
+- Prompts folder layout and archive-on-success workflow
+- Database conventions (relational vs. JSONB)
 
 ## What Are Rules?
 

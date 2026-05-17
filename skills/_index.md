@@ -8,6 +8,7 @@ Skills provide background knowledge and context that Claude can draw upon automa
 Language-specific knowledge and best practices.
 - Python conventions
 - TypeScript patterns
+- Go idioms (pure-Go SQLite, cross-platform paths, error wrapping)
 - Rust idioms
 - And more...
 
@@ -16,6 +17,7 @@ Framework-specific guidance and patterns.
 - React best practices
 - Django conventions
 - FastAPI patterns
+- Wails (desktop Go + webview; v3 alpha IPC + Linux webkit2gtk gotchas)
 - And more...
 
 ### [Practices](practices/)
@@ -26,6 +28,9 @@ Development practices and methodologies.
 - Git workflow standards
 - Cost-efficient PDF scraping protocol
 - Token-efficient Playwright MCP usage
+- Go: tag-triggered GitHub Releases workflow
+- Go: check-on-launch update banner pattern
+- Go: Windows desktop packaging (icon, versioninfo, WebView2, PS installer)
 
 ## Installation
 
