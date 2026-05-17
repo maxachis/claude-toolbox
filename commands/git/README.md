@@ -10,6 +10,7 @@ Commands for git workflow automation.
 | `pr` | Create a pull request |
 | `review` | Review code for issues and improvements |
 | `ship` | Stage, commit, and push in one step |
+| `release-tag` | Cut a semver release tag and push it to trigger the release workflow |
 
 ## Usage
 
