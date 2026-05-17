@@ -61,6 +61,29 @@ Name directories after the concern they represent (`auth/`, `integrations/`, `pa
 
 Avoid isolating prematurely. If a concern is a single file with no signs of growth, a dedicated directory adds navigation overhead for no benefit. Let complexity justify the structure.
 
+## Agent Generation vs. Maintenance Tension
+
+AI agents naturally produce monolithic files when generating code from scratch — it's the path of least resistance (no file coordination, no imports to wire up). But these same monoliths become liabilities when agents need to *maintain* the code later:
+
+- **Edit tool fragility**: String matching (`old_string`) is more likely to collide or break in large files
+- **Context cost**: Every modification requires reading the entire file, even for a 5-line change
+- **Blast radius**: Changing one concern risks breaking unrelated code in the same file
+
+**The ~300–400 line heuristic**: If a file exceeds what an agent can read in a single tool call and hold in working memory, it should be split. This isn't about clean architecture — it's about practical tooling limits.
+
+### Generate-Then-Separate Workflow
+
+Don't fight the generation agent's instinct to produce a monolith. Instead, use two phases:
+
+1. **Generate**: Let the agent produce a working prototype in whatever structure is fastest (often a single file)
+2. **Separate**: Once it works, immediately ask for a separation pass *before* moving to iteration
+
+This is cheap when the code is fresh (the agent just wrote it and understands it fully) and avoids the riskier "refactor a mature file" scenario later.
+
+### Don't Over-Split
+
+The opposite extreme — splitting 800 lines into 20 tiny files — creates a different agent problem (too many files to coordinate, too many reads needed for context). The sweet spot is a handful of well-named files with clear responsibilities.
+
 ## General Guidance
 
 | Pattern | Recommendation |
@@ -70,3 +93,4 @@ Avoid isolating prematurely. If a concern is a single file with no signs of grow
 | Shared utilities/types | Split into dedicated files - high reuse value |
 | Configuration + implementation | Split - config changes independently |
 | Small cohesive units | Keep combined - overhead not worth it |
+| Agent-generated prototypes | Generate monolith → verify → separate before iterating |

@@ -21,6 +21,14 @@
 ### Classes/Types
 - PascalCase: `UserService`, `ApiResponse`
 
+## No Magic Numbers
+
+- If a number is meaningful and its meaning non-obvious, extract it to a named constant.
+- Good: `SECONDS_PER_DAY = 86400` then use `SECONDS_PER_DAY`. Bad: `time.sleep(86400)`.
+- Trivial cases (0, 1, -1 as loop bounds/increments, empty checks) are fine inline.
+- Applies to thresholds, multipliers, sizes, durations, retry counts, index offsets, and similar.
+- The constant name should convey *why* that value was chosen, not just *what* it is.
+
 ## Functions
 
 - Single responsibility
