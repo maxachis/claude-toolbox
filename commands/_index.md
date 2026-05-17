@@ -20,6 +20,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/pr` | [git](git/) | Create a pull request |
 | `/review` | [git](git/) | Review code for issues and improvements |
 | `/ship` | [git](git/) | Stage, commit, and push in one step |
+| `/release-tag` | [git](git/) | Cut a new semver release tag and push it |
 | `/security-audit` | [security](security/) | Audit code for security vulnerabilities |
 | `/auth` | [security](security/) | Implement authentication and authorization |
 | `/test` | [testing](testing/) | Generate tests for code |
@@ -27,6 +28,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/doc` | [documentation](documentation/) | Generate or update documentation |
 | `/explain` | [documentation](documentation/) | Explain how code works |
 | `/refactor` | [refactoring](refactoring/) | Refactor code to improve quality |
+| `/architecture-friction` | [workflow](workflow/) | Identify recurring friction between Claude Code and the project's architecture |
 | `/apply` | [workflow](workflow/) | Pull rules, conventions, or bundles from the toolbox into the project |
 | `/capture` | [workflow](workflow/) | Analyze project for reusable patterns and capture them into the toolbox |
 | `/devcontainer-init` | [workflow](workflow/) | Scaffold a `.devcontainer/` setup for the current project |
@@ -82,6 +84,7 @@ Commands for code improvement.
 
 ### [Workflow](workflow/)
 Commands for workflow automation and session analysis.
+- `architecture-friction` - Identify recurring friction between Claude Code and the project's architecture
 - `apply` - Pull rules, conventions, or bundles from the toolbox into the project
 - `capture` - Analyze project for reusable patterns and capture them into the toolbox
 - `devcontainer-init` - Scaffold a devcontainer setup for the current project

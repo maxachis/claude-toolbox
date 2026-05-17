@@ -7,6 +7,7 @@ Commands for analyzing and improving Claude Code session efficiency.
 | Command | Description |
 |---------|-------------|
 | `apply` | Pull rules, conventions, or bundles from the toolbox into the current project |
+| `architecture-friction` | Identify recurring friction between Claude Code and the project's architecture |
 | `capture` | Analyze project for reusable patterns and capture them into the toolbox |
 | `devcontainer-init` | Scaffold a `.devcontainer/` setup for the current project |
 | `pattern` | Search, browse, and apply reusable code structure recipes |
@@ -29,7 +30,18 @@ Commands for analyzing and improving Claude Code session efficiency.
 
 # Focus on approach/backtracking
 /session-review approach
+
+# Find where Claude fought the project's architecture
+/architecture-friction
+
+# Focus on a specific kind of friction
+/architecture-friction tooling
 ```
+
+`session-review` targets Claude's tool-use efficiency within a session.
+`architecture-friction` targets structural mismatch — where the project's
+layout, conventions, or tooling worked against the agent — and proposes
+durable fixes to the project setup (CLAUDE.md, rules, scripts).
 
 ## Installation
 
