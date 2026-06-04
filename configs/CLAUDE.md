@@ -5,6 +5,25 @@
 
 When committing to git, default to ssh rather than HTTPS.
 
+## Commit Messages
+
+Write commit subject lines in [Conventional Commits](https://www.conventionalcommits.org/) format: `type(optional-scope): description`.
+
+- Common types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`, `ci`, `perf`.
+- Keep the subject in the imperative mood and under ~72 characters.
+- Use the body to explain *what* and *why* when the change isn't self-evident from the subject.
+
+## Reporting Avoidable Obstacles
+
+While executing a request, you may hit friction that is both **substantial and preventable** — e.g. a straightforward change trips a footgun, or you spend significant effort hunting for something that should have been easy to find, or a tool/setup behaves surprisingly.
+
+When this happens, note it in your final remarks before returning control to the user. For each obstacle, briefly state:
+
+- **What** the obstacle was
+- **A concrete recommendation** to avoid it next time (a doc or comment to add, a config to change, a convention to record)
+
+Keep the bar high: report only friction that was meaningful and avoidable, not routine work or expected effort. If an obstacle is a recurring project gotcha, also record it per **Learning from Mistakes** below.
+
 ## Test-Driven Development
 
 When implementing new functionality or fixing bugs, follow red-green TDD:
