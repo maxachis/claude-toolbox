@@ -5,6 +5,14 @@
 
 When committing to git, default to ssh rather than HTTPS.
 
+## Named Arguments at Call Sites
+
+When a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind its arguments by name at the call site by construction — via keyword-only parameters where the language supports them, or an options object / config struct / builder where it doesn't.
+
+## Debugging Screenshots
+
+After reading a debugging screenshot (e.g. one taken via Playwright MCP), delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
+
 ## Commit Messages
 
 Write commit subject lines in [Conventional Commits](https://www.conventionalcommits.org/) format: `type(optional-scope): description`.
