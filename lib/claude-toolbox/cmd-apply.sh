@@ -16,6 +16,7 @@ Types:
   convention <name>     Copy a convention snippet → .claude/rules/<name>.md
   bundle <name>         Copy bundle CLAUDE.md + commands into project
   pattern <name>        Copy a pattern recipe → .claude/patterns/<name>.md
+  antipattern <name>    Copy an antipattern entry → .claude/antipatterns/<name>.md
 
 Options:
   --list [type]    List available rules/conventions/bundles
@@ -58,8 +59,9 @@ EOF
     convention) apply_convention "$name" "$force" ;;
     bundle)     apply_bundle "$name" "$force" ;;
     pattern)    apply_pattern "$name" "$force" ;;
+    antipattern) apply_antipattern "$name" "$force" ;;
     *)
-      error "Unknown type: $type. Use 'rule', 'convention', 'bundle', or 'pattern'."
+      error "Unknown type: $type. Use 'rule', 'convention', 'bundle', 'pattern', or 'antipattern'."
       return 1
       ;;
   esac
@@ -115,6 +117,21 @@ apply_list() {
     if [[ -d "$patterns_dir" ]]; then
       echo "Patterns:"
       for f in "$patterns_dir"/*.md; do
+        [[ -f "$f" ]] || continue
+        local name
+        name="$(basename "$f" .md)"
+        [[ "$name" == "_index" || "$name" == "README" ]] && continue
+        printf "  %s\n" "$name"
+      done
+      echo ""
+    fi
+  fi
+
+  if [[ -z "$filter" || "$filter" == "antipatterns" ]]; then
+    local antipatterns_dir="${TOOLBOX_ROOT}/antipatterns"
+    if [[ -d "$antipatterns_dir" ]]; then
+      echo "Antipatterns:"
+      for f in "$antipatterns_dir"/*.md; do
         [[ -f "$f" ]] || continue
         local name
         name="$(basename "$f" .md)"
@@ -225,4 +242,25 @@ apply_pattern() {
   mkdir -p ".claude/patterns"
   cp "$source" "$target"
   info "Applied pattern '${name}' → .claude/patterns/${name}.md"
+}
+
+apply_antipattern() {
+  local name="$1"
+  local force="$2"
+  local source="${TOOLBOX_ROOT}/antipatterns/${name}.md"
+  local target=".claude/antipatterns/${name}.md"
+
+  if [[ ! -f "$source" ]]; then
+    error "Antipattern '${name}' not found at ${source}"
+    return 1
+  fi
+
+  if [[ -f "$target" && "$force" -ne 1 ]]; then
+    error ".claude/antipatterns/${name}.md already exists. Use --force to overwrite."
+    return 1
+  fi
+
+  mkdir -p ".claude/antipatterns"
+  cp "$source" "$target"
+  info "Applied antipattern '${name}' → .claude/antipatterns/${name}.md"
 }

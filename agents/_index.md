@@ -24,6 +24,7 @@ cp agents/*.md .claude/agents/
 | `devcontainer-support` | Devcontainer troubleshooting and configuration |
 | `db-architect` | Relational database schema design |
 | `design-auditor` | Design system consistency audits |
+| `antipattern-auditor` | Audits a repo against the antipatterns/ catalog of agentic failure modes |
 | `ui-reviewer` | UI code review for design best practices |
 | `security-reviewer` | Security audits and vulnerability analysis |
 | `performance-analyst` | Performance optimization and profiling |

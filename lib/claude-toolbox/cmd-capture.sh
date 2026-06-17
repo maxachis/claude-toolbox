@@ -16,6 +16,7 @@ Types:
   command <category/name> Copy .claude/commands/<cat>/<name>.md into toolbox
   skill <category/name>   Copy .claude/skills/<cat>/<name>.md into toolbox
   pattern <name>          Copy .claude/patterns/<name>.md into toolbox
+  antipattern <name>      Copy .claude/antipatterns/<name>.md into toolbox
 
 Options:
   -f, --force        Skip overwrite confirmations
@@ -40,7 +41,7 @@ EOF
   done
 
   if [[ -z "$type" ]]; then
-    error "Missing type. Usage: claude-toolbox capture <rule|convention|command|skill|pattern> <name>"
+    error "Missing type. Usage: claude-toolbox capture <rule|convention|command|skill|pattern|antipattern> <name>"
     return 1
   fi
 
@@ -55,8 +56,9 @@ EOF
     command)    capture_command "$name" "$force" "$from_path" ;;
     skill)      capture_skill "$name" "$force" "$from_path" ;;
     pattern)    capture_pattern "$name" "$force" "$from_path" ;;
+    antipattern) capture_antipattern "$name" "$force" "$from_path" ;;
     *)
-      error "Unknown type: $type. Use 'rule', 'convention', 'command', 'skill', or 'pattern'."
+      error "Unknown type: $type. Use 'rule', 'convention', 'command', 'skill', 'pattern', or 'antipattern'."
       return 1
       ;;
   esac
@@ -243,6 +245,35 @@ capture_pattern() {
   local index="${TOOLBOX_ROOT}/patterns/_index.md"
   if [[ -f "$index" ]]; then
     local row="| \`${name}\` | TODO | TODO — add description |"
+    insert_table_row "$index" "$row" "$name"
+  fi
+}
+
+capture_antipattern() {
+  local name="$1"
+  local force="$2"
+  local from_path="$3"
+  local source="${from_path:-.claude/antipatterns/${name}.md}"
+  local target="${TOOLBOX_ROOT}/antipatterns/${name}.md"
+
+  if [[ ! -f "$source" ]]; then
+    error "Antipattern source not found at ${source}"
+    return 1
+  fi
+
+  if [[ -f "$target" && "$force" -ne 1 ]]; then
+    error "Antipattern '${name}' already exists at ${target}. Use --force to overwrite."
+    return 1
+  fi
+
+  mkdir -p "${TOOLBOX_ROOT}/antipatterns"
+  cp "$source" "$target"
+  info "Captured antipattern '${name}'"
+
+  # Update antipatterns/_index.md (columns: ID | Category | Severity | Summary)
+  local index="${TOOLBOX_ROOT}/antipatterns/_index.md"
+  if [[ -f "$index" ]]; then
+    local row="| \`${name}\` | TODO | TODO | TODO — add summary |"
     insert_table_row "$index" "$row" "$name"
   fi
 }

@@ -15,6 +15,7 @@ claude-toolbox/
 ├── plugins/        # Installable bundles with plugin.json manifests
 ├── rules/          # CLAUDE.md templates (project-types/) and convention snippets (conventions/)
 ├── patterns/       # Reusable code structure recipes (YAML frontmatter + markdown)
+├── antipatterns/   # Auditable catalog of agentic failure modes (detection signal + fix)
 ├── configs/        # Settings, keybindings, and MCP server templates
 ├── bundles/        # Curated role-based component collections
 └── docs/           # Project documentation
@@ -74,12 +75,15 @@ The `claude-toolbox` CLI (`bin/claude-toolbox`) provides a unified interface for
 | `claude-toolbox apply convention <name>` | Copy convention snippet → `.claude/rules/` |
 | `claude-toolbox apply bundle <name>` | Copy bundle CLAUDE.md + commands into project |
 | `claude-toolbox apply pattern <name>` | Copy pattern recipe → `.claude/patterns/` |
-| `claude-toolbox apply --list [type]` | List available rules/conventions/bundles/patterns |
+| `claude-toolbox apply antipattern <name>` | Copy antipattern entry → `.claude/antipatterns/` |
+| `claude-toolbox apply --list [type]` | List available rules/conventions/bundles/patterns/antipatterns |
 | `claude-toolbox capture rule <name>` | Save `./CLAUDE.md` as project-type template |
 | `claude-toolbox capture convention <name>` | Save `.claude/rules/` file as reusable convention |
 | `claude-toolbox capture command <cat/name>` | Copy `.claude/commands/` file into toolbox |
 | `claude-toolbox capture skill <cat/name>` | Copy `.claude/skills/` file into toolbox |
 | `claude-toolbox capture pattern <name>` | Copy `.claude/patterns/` file into toolbox |
+| `claude-toolbox capture antipattern <name>` | Copy `.claude/antipatterns/` file into toolbox |
+| `claude-toolbox audit [path] [--severity L] [--catalog dir]` | Scan a codebase against the `antipatterns/` catalog (mechanical grep tier) |
 | `claude-toolbox devcontainer init [--lang X] [--with addon]` | Copy template into `.devcontainer/`, optionally apply addons |
 | `claude-toolbox devcontainer check` | Verify mounts/credentials inside a container |
 | `claude-toolbox devcontainer generate [lang...]` | Regenerate `.jsonc` templates |

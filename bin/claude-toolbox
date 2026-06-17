@@ -54,12 +54,18 @@ Knowledge:
   apply convention <name> [-f]  Copy convention snippet → .claude/rules/<name>.md
   apply bundle <name> [-f]      Copy bundle CLAUDE.md + commands into project
   apply pattern <name> [-f]     Copy pattern recipe → .claude/patterns/<name>.md
-  apply --list [type]           List available rules/conventions/bundles/patterns
+  apply antipattern <name> [-f] Copy antipattern entry → .claude/antipatterns/<name>.md
+  apply --list [type]           List available rules/conventions/bundles/patterns/antipatterns
   capture rule <name> [-f]      Save ./CLAUDE.md as project-type template
   capture convention <name> [-f] Save .claude/rules/ file as reusable convention
   capture command <cat/name> [-f] Copy .claude/commands/ file into toolbox
   capture skill <cat/name> [-f]  Copy .claude/skills/ file into toolbox
   capture pattern <name> [-f]   Copy .claude/patterns/ file into toolbox
+  capture antipattern <name> [-f] Copy .claude/antipatterns/ file into toolbox
+
+Audit:
+  audit [path]                  Scan a codebase against the antipatterns/ catalog
+                                (mechanical grep tier; 0=clean, 2=candidates found)
 
 Devcontainer:
   devcontainer init [--lang L]  Copy .jsonc template into .devcontainer/devcontainer.json
@@ -86,6 +92,8 @@ Examples:
   claude-toolbox apply convention commit-messages       # Copy to .claude/rules/
   claude-toolbox capture rule my-project                # Save CLAUDE.md as template
   claude-toolbox capture command api/my-endpoint        # Copy command into toolbox
+  claude-toolbox audit                                   # Audit cwd against the antipattern catalog
+  claude-toolbox audit ./src --severity medium           # Audit a path, medium+ severity only
   claude-toolbox list patterns --tag frontend            # List patterns by tag
   claude-toolbox apply pattern glossary-component        # Copy pattern to .claude/patterns/
   claude-toolbox capture pattern glossary-component      # Copy pattern into toolbox
@@ -147,6 +155,11 @@ case "$cmd" in
     source "${LIB_DIR}/cmd-capture.sh"
     shift
     cmd_capture "$@"
+    ;;
+  audit)
+    source "${LIB_DIR}/cmd-audit.sh"
+    shift
+    cmd_audit "$@"
     ;;
   devcontainer)
     source "${LIB_DIR}/cmd-devcontainer.sh"
