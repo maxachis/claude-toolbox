@@ -30,6 +30,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/refactor` | [refactoring](refactoring/) | Refactor code to improve quality |
 | `/architecture-friction` | [workflow](workflow/) | Identify recurring friction between Claude Code and the project's architecture |
 | `/apply` | [workflow](workflow/) | Pull rules, conventions, or bundles from the toolbox into the project |
+| `/audit-antipatterns` | [workflow](workflow/) | Audit a repo against the antipatterns catalog across both detection tiers |
 | `/capture` | [workflow](workflow/) | Analyze project for reusable patterns and capture them into the toolbox |
 | `/devcontainer-init` | [workflow](workflow/) | Scaffold a `.devcontainer/` setup for the current project |
 | `/pattern` | [workflow](workflow/) | Search, browse, and apply reusable code structure recipes |

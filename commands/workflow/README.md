@@ -8,6 +8,7 @@ Commands for analyzing and improving Claude Code session efficiency.
 |---------|-------------|
 | `apply` | Pull rules, conventions, or bundles from the toolbox into the current project |
 | `architecture-friction` | Identify recurring friction between Claude Code and the project's architecture |
+| `audit-antipatterns` | Audit a repo against the antipatterns catalog across both detection tiers |
 | `capture` | Analyze project for reusable patterns and capture them into the toolbox |
 | `devcontainer-init` | Scaffold a `.devcontainer/` setup for the current project |
 | `pattern` | Search, browse, and apply reusable code structure recipes |
