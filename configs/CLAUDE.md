@@ -9,6 +9,10 @@ When committing to git, default to ssh rather than HTTPS.
 
 When a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind its arguments by name at the call site by construction — via keyword-only parameters where the language supports them, or an options object / config struct / builder where it doesn't.
 
+## Avoid Monolithic Files
+
+When a file you're working in has grown large *and* is mixing unrelated concerns (e.g. IO, business logic, and presentation in one module), don't silently keep adding to it. Surface this to the user: name the distinct concerns you see and propose a concrete split. Do not refactor without approval — file splits ripple through imports and history. Size alone isn't the trigger — a long but cohesive file is fine; the signal is *multiple responsibilities* that have outgrown one module.
+
 ## Debugging Screenshots
 
 After reading a debugging screenshot (e.g. one taken via Playwright MCP), delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
