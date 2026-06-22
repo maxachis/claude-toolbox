@@ -50,7 +50,9 @@ Add servers to `configs/mcp/global.json` under `mcpServers`, then run
 `mcpServers` key of `~/.claude.json` — the global config Claude Code reads —
 backing the file up first. Only the `mcpServers` subtree is merged, so keys
 like `$schema` never pollute the global config. An empty `mcpServers` is a
-no-op.
+no-op. Install also warns if a server's runtime `command` (e.g. `npx`, `uvx`)
+is not on `PATH`, so a missing dependency surfaces immediately instead of as a
+later "failed to connect".
 
 **Secrets / machine-specific servers** (e.g. a Context7 `--api-key`): don't put
 them in the committed `global.json`. Copy `global.local.example.json` to

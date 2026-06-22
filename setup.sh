@@ -188,6 +188,45 @@ merge_mcp() {
   rm -f "$overlay"
 }
 
+# Warn when a toolbox-managed MCP server's stdio `command` is not on PATH, so a
+# missing runtime (npx/uvx/etc.) surfaces at install time rather than as a
+# silent "failed to connect" later. URL-only (remote) servers have no command
+# and are skipped.
+check_mcp_deps() {
+  local py
+  py="$(find_python)" || return
+
+  # Emit "command<TAB>server1,server2" per distinct command across all sources.
+  local rows
+  rows="$("$py" - "$@" << 'PYEOF'
+import json, sys
+from collections import OrderedDict
+
+cmd_servers = OrderedDict()
+for path in sys.argv[1:]:
+    try:
+        with open(path) as f:
+            servers = json.load(f).get("mcpServers", {})
+    except (FileNotFoundError, ValueError):
+        continue
+    for name, cfg in servers.items():
+        cmd = cfg.get("command")
+        if cmd:
+            cmd_servers.setdefault(cmd, []).append(name)
+
+for cmd, names in cmd_servers.items():
+    print(cmd + "\t" + ",".join(names))
+PYEOF
+)"
+
+  while IFS=$'\t' read -r cmd servers; do
+    [[ -z "$cmd" ]] && continue
+    if ! command -v "$cmd" > /dev/null 2>&1; then
+      warn "MCP runtime '${cmd}' not found on PATH — server(s) [${servers}] won't start until it's installed"
+    fi
+  done <<< "$rows"
+}
+
 do_link() {
   # Validate agents before linking (unless --skip-validation)
   if [[ "${SKIP_VALIDATION:-}" != "1" ]]; then
@@ -263,6 +302,7 @@ do_link() {
   if [[ -f "$MCP_LOCAL_SRC" ]]; then
     merge_mcp "$MCP_LOCAL_SRC" "$MCP_DEST"
   fi
+  check_mcp_deps "$MCP_SRC" "$MCP_LOCAL_SRC"
 
   # Link toolbox root into ~/.claude/toolbox (used by devcontainer mounts)
   local toolbox_link="${CLAUDE_DIR}/toolbox"

@@ -94,6 +94,39 @@ EOF
   [[ "$output" == *"True"* ]]
 }
 
+# Warn when a server's runtime command is not on PATH; skip URL-only (remote)
+# servers and don't flag commands that exist.
+@test "check_mcp_deps warns about a missing runtime command" {
+  src="${TEST_TEMP}/global.json"
+  cat > "$src" << 'EOF'
+{ "mcpServers": {
+  "good":   { "command": "sh", "args": [] },
+  "bad":    { "command": "totally-not-a-real-binary-xyz", "args": [] },
+  "remote": { "type": "http", "url": "https://example.com/mcp" }
+} }
+EOF
+  run bash -c "source '$SETUP_SH'; check_mcp_deps '$src'"
+  [ "$status" -eq 0 ]
+  # Missing runtime and the server using it are named.
+  [[ "$output" == *"totally-not-a-real-binary-xyz"* ]]
+  [[ "$output" == *"bad"* ]]
+  # A present command and a URL-only server are not flagged.
+  [[ "$output" != *"'sh'"* ]]
+  [[ "$output" != *"remote"* ]]
+}
+
+# All runtimes present: no warning, no noise. Also tolerates a missing overlay.
+@test "check_mcp_deps is quiet when all runtimes are present" {
+  src="${TEST_TEMP}/global.json"
+  cat > "$src" << 'EOF'
+{ "mcpServers": { "a": { "command": "sh" }, "b": { "command": "env" } } }
+EOF
+  run bash -c "source '$SETUP_SH'; check_mcp_deps '$src' '${TEST_TEMP}/absent.json'"
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"not found"* ]]
+  [[ "$output" != *"won't start"* ]]
+}
+
 # A missing source is tolerated (warn + return), not a hard failure.
 @test "merge_mcp tolerates a missing source file" {
   run bash -c "source '$SETUP_SH'; merge_mcp '${TEST_TEMP}/nope.json' '${TEST_TEMP}/claude.json'"
