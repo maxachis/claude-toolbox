@@ -21,8 +21,11 @@ SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
 SETTINGS_DEST="${CLAUDE_DIR}/settings.json"
 
 # Global MCP config to merge into ~/.claude.json (under the "mcpServers" key).
-# Overridable via env for testing.
+# global.json is committed; global.local.json is a gitignored overlay for
+# machine-specific / secret-bearing servers, merged on top. Overridable via env
+# for testing.
 MCP_SRC="${TOOLBOX_MCP_SRC:-${SCRIPT_DIR}/configs/mcp/global.json}"
+MCP_LOCAL_SRC="${TOOLBOX_MCP_LOCAL_SRC:-${SCRIPT_DIR}/configs/mcp/global.local.json}"
 MCP_DEST="${TOOLBOX_MCP_DEST:-${HOME}/.claude.json}"
 
 # Global CLAUDE.md to link into ~/.claude/CLAUDE.md
@@ -177,7 +180,12 @@ merge_mcp() {
     return
   fi
 
-  merge_json "$src" "$dest" "mcpServers"
+  # Merge ONLY the mcpServers subtree, so source-only keys ($schema, _comment,
+  # etc.) never pollute the global ~/.claude.json.
+  local overlay
+  overlay="$("$py" -c 'import json,sys,tempfile; servers=json.load(open(sys.argv[1])).get("mcpServers",{}); f=tempfile.NamedTemporaryFile("w",suffix=".json",delete=False); json.dump({"mcpServers":servers},f); f.close(); print(f.name)' "$src")"
+  merge_json "$overlay" "$dest" "mcpServers"
+  rm -f "$overlay"
 }
 
 do_link() {
@@ -249,8 +257,12 @@ do_link() {
   # Merge global settings
   merge_json "$SETTINGS_SRC" "$SETTINGS_DEST" "settings.json"
 
-  # Merge global MCP servers into ~/.claude.json
+  # Merge global MCP servers into ~/.claude.json, then layer the optional
+  # gitignored local overlay (secret-bearing / machine-specific servers) on top.
   merge_mcp "$MCP_SRC" "$MCP_DEST"
+  if [[ -f "$MCP_LOCAL_SRC" ]]; then
+    merge_mcp "$MCP_LOCAL_SRC" "$MCP_DEST"
+  fi
 
   # Link toolbox root into ~/.claude/toolbox (used by devcontainer mounts)
   local toolbox_link="${CLAUDE_DIR}/toolbox"

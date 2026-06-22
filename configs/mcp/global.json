@@ -1,4 +1,9 @@
 {
   "$schema": "https://claude.ai/schemas/mcp.json",
-  "mcpServers": {}
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
 }

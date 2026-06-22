@@ -92,7 +92,7 @@ Architecture: `bin/claude-toolbox` dispatches to command modules in `lib/claude-
 
 ## Shell Scripts
 
-- **`setup.sh`** — Links the toolbox (`commands/`, `skills/`, `agents/`, `CLAUDE.md`) into `~/.claude/`, merges `configs/settings/global.json` into `~/.claude/settings.json`, merges `configs/mcp/global.json` (`mcpServers`) into `~/.claude.json` (skipped when empty), and symlinks the CLI to `~/.local/bin/`. Runs `validate.sh` first. Flags: `--unlink` (remove links, restore backups), `--skip-validation` (bypass agent validation). On WSL, also runs `configs/devcontainer/wsl-setup.sh`.
+- **`setup.sh`** — Links the toolbox (`commands/`, `skills/`, `agents/`, `CLAUDE.md`) into `~/.claude/`, merges `configs/settings/global.json` into `~/.claude/settings.json`, merges `configs/mcp/global.json` (and the gitignored `global.local.json` overlay) `mcpServers` into `~/.claude.json` (only the `mcpServers` subtree; skipped when empty), and symlinks the CLI to `~/.local/bin/`. Runs `validate.sh` first. Flags: `--unlink` (remove links, restore backups), `--skip-validation` (bypass agent validation). On WSL, also runs `configs/devcontainer/wsl-setup.sh`.
 - **`validate.sh`** — Validates agent frontmatter in `agents/`. Checks required fields (`name`, `description`), name format, tool/model/permissionMode values, and name-filename consistency. Requires Python. Accepts an optional directory argument (defaults to `agents/`).
 
 ## Testing

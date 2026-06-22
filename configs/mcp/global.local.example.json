@@ -1,0 +1,10 @@
+{
+  "$schema": "https://claude.ai/schemas/mcp.json",
+  "_comment": "Copy to global.local.json (gitignored) for machine-specific or secret-bearing servers. Merged on top of global.json on install; values here win on conflict.",
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-REPLACE_WITH_YOUR_KEY"]
+    }
+  }
+}

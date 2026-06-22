@@ -5,5 +5,8 @@
 .claude/
 notes.md
 
+# Machine-specific / secret-bearing MCP servers (merged on top of global.json)
+configs/mcp/global.local.json
+
 # Symlinks to external private projects (machine-specific)
 commands/taskflow/
