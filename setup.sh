@@ -1,36 +1,62 @@
 #!/usr/bin/env bash
 #
-# setup.sh — Link claude-toolbox into ~/.claude/
+# setup.sh — Link claude-toolbox into a Claude Code config dir
 #
 # Usage:
 #   ./setup.sh                    # Validate agents, then link
 #   ./setup.sh --unlink           # Remove links and restore backups
 #   ./setup.sh --skip-validation  # Link without validating agents
 #
+# Which account(s) get synced:
+#   - By default, the active account: $CLAUDE_CONFIG_DIR if set, else ~/.claude.
+#   - Set TOOLBOX_ACCOUNTS to a colon-separated list of config dirs to sync
+#     several accounts in one run, e.g.
+#       TOOLBOX_ACCOUNTS="$HOME/.claude:$HOME/.claude-work" ./setup.sh
+#
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLAUDE_DIR="${HOME}/.claude"
 
-# Directories to link: toolbox_subdir -> ~/.claude/target_name
+# Directories to link: toolbox_subdir -> <config dir>/target_name
 LINK_DIRS=("commands" "skills" "agents" "configs")
 
-# Settings file to merge into ~/.claude/settings.json
+# Account-independent sources. global.json is committed; global.local.json is a
+# gitignored overlay for machine-specific / secret-bearing servers, merged on
+# top. Sources are overridable via env for testing.
 SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
-SETTINGS_DEST="${CLAUDE_DIR}/settings.json"
-
-# Global MCP config to merge into ~/.claude.json (under the "mcpServers" key).
-# global.json is committed; global.local.json is a gitignored overlay for
-# machine-specific / secret-bearing servers, merged on top. Overridable via env
-# for testing.
 MCP_SRC="${TOOLBOX_MCP_SRC:-${SCRIPT_DIR}/configs/mcp/global.json}"
 MCP_LOCAL_SRC="${TOOLBOX_MCP_LOCAL_SRC:-${SCRIPT_DIR}/configs/mcp/global.local.json}"
-MCP_DEST="${TOOLBOX_MCP_DEST:-${HOME}/.claude.json}"
-
-# Global CLAUDE.md to link into ~/.claude/CLAUDE.md
 CLAUDE_MD_SRC="${SCRIPT_DIR}/configs/CLAUDE.md"
-CLAUDE_MD_DEST="${CLAUDE_DIR}/CLAUDE.md"
+
+# Per-account destination paths. set_account_paths recomputes these for each
+# config dir being synced; the call below initializes them for the active
+# account (and for tests that source this script to exercise its functions).
+set_account_paths() {
+  CLAUDE_DIR="$1"
+  SETTINGS_DEST="${CLAUDE_DIR}/settings.json"
+  CLAUDE_MD_DEST="${CLAUDE_DIR}/CLAUDE.md"
+  # The big config file sits BESIDE the dir (~/.claude.json) for the default
+  # account, but INSIDE the dir for any account selected via CLAUDE_CONFIG_DIR.
+  if [[ "$CLAUDE_DIR" == "${HOME}/.claude" ]]; then
+    MCP_DEST="${TOOLBOX_MCP_DEST:-${HOME}/.claude.json}"
+  else
+    MCP_DEST="${TOOLBOX_MCP_DEST:-${CLAUDE_DIR}/.claude.json}"
+  fi
+}
+
+# Populate ACCOUNTS with the config dir(s) to sync. TOOLBOX_ACCOUNTS (a
+# colon-separated list) wins; otherwise the single active account.
+resolve_accounts() {
+  if [[ -n "${TOOLBOX_ACCOUNTS:-}" ]]; then
+    local IFS=':'
+    read -ra ACCOUNTS <<< "$TOOLBOX_ACCOUNTS"
+  else
+    ACCOUNTS=("${CLAUDE_CONFIG_DIR:-${HOME}/.claude}")
+  fi
+}
+
+set_account_paths "${CLAUDE_CONFIG_DIR:-${HOME}/.claude}"
 
 # Colors (if terminal supports them)
 if [ -t 1 ]; then
@@ -413,25 +439,51 @@ do_unlink() {
   info "Done! Links removed."
 }
 
+# Run an action (do_link / do_unlink) once per configured account, recomputing
+# the per-account destination paths each time. With a single account this is a
+# transparent pass-through; with several it prints a header before each.
+run_for_accounts() {
+  local action="$1"
+  resolve_accounts
+
+  local multi=0
+  [[ ${#ACCOUNTS[@]} -gt 1 ]] && multi=1
+
+  local account
+  for account in "${ACCOUNTS[@]}"; do
+    set_account_paths "$account"
+    if [[ $multi -eq 1 ]]; then
+      echo ""
+      info "════ Account: ${account} ════"
+    fi
+    "$action"
+  done
+}
+
 # Only dispatch when executed directly; when sourced (e.g. by tests), expose the
 # functions above without running anything.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   case "${1:-}" in
     --unlink)
-      do_unlink
+      run_for_accounts do_unlink
       ;;
     --skip-validation)
-      SKIP_VALIDATION=1 do_link
+      SKIP_VALIDATION=1 run_for_accounts do_link
       ;;
     --help|-h)
       echo "Usage: $0 [--unlink | --skip-validation]"
       echo ""
-      echo "  (no args)            Validate agents, then link toolbox into ~/.claude/"
+      echo "  (no args)            Validate agents, then link toolbox into the active config dir"
       echo "  --skip-validation    Link without validating agents"
       echo "  --unlink             Remove links and restore backups"
+      echo ""
+      echo "Account selection:"
+      echo "  By default targets \$CLAUDE_CONFIG_DIR (or ~/.claude). Set TOOLBOX_ACCOUNTS"
+      echo "  to a colon-separated list of config dirs to sync several at once, e.g.:"
+      echo "    TOOLBOX_ACCOUNTS=\"\$HOME/.claude:\$HOME/.claude-work\" $0"
       ;;
     *)
-      do_link
+      run_for_accounts do_link
       ;;
   esac
 fi

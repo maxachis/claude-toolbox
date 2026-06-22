@@ -133,3 +133,43 @@ EOF
   [ "$status" -eq 0 ]
   [[ "$output" == *"not found"* ]]
 }
+
+# --- Multi-account support ---------------------------------------------------
+
+# For the default account (~/.claude), the legacy ~/.claude.json sits BESIDE the
+# config dir in $HOME, not inside it.
+@test "set_account_paths puts .claude.json beside the default ~/.claude dir" {
+  run bash -c "unset TOOLBOX_MCP_DEST; source '$SETUP_SH'; set_account_paths \"\$HOME/.claude\"; echo \"\$CLAUDE_DIR|\$SETTINGS_DEST|\$CLAUDE_MD_DEST|\$MCP_DEST\""
+  [ "$status" -eq 0 ]
+  [ "$output" = "${HOME}/.claude|${HOME}/.claude/settings.json|${HOME}/.claude/CLAUDE.md|${HOME}/.claude.json" ]
+}
+
+# For any non-default account (selected via CLAUDE_CONFIG_DIR), .claude.json
+# lives INSIDE the config dir.
+@test "set_account_paths puts .claude.json inside a non-default config dir" {
+  run bash -c "unset TOOLBOX_MCP_DEST; source '$SETUP_SH'; set_account_paths '${TEST_TEMP}/acct2'; echo \"\$CLAUDE_DIR|\$SETTINGS_DEST|\$MCP_DEST\""
+  [ "$status" -eq 0 ]
+  [ "$output" = "${TEST_TEMP}/acct2|${TEST_TEMP}/acct2/settings.json|${TEST_TEMP}/acct2/.claude.json" ]
+}
+
+# With nothing configured, sync targets just the active account.
+@test "resolve_accounts defaults to the active ~/.claude account" {
+  run bash -c "unset CLAUDE_CONFIG_DIR TOOLBOX_ACCOUNTS; source '$SETUP_SH'; resolve_accounts; printf '%s\n' \"\${ACCOUNTS[@]}\""
+  [ "$status" -eq 0 ]
+  [ "$output" = "${HOME}/.claude" ]
+}
+
+# A single non-default account is honored via CLAUDE_CONFIG_DIR.
+@test "resolve_accounts uses CLAUDE_CONFIG_DIR when set" {
+  run bash -c "unset TOOLBOX_ACCOUNTS; export CLAUDE_CONFIG_DIR='${TEST_TEMP}/work'; source '$SETUP_SH'; resolve_accounts; printf '%s\n' \"\${ACCOUNTS[@]}\""
+  [ "$status" -eq 0 ]
+  [ "$output" = "${TEST_TEMP}/work" ]
+}
+
+# TOOLBOX_ACCOUNTS lists several config dirs (colon-separated) to sync at once.
+@test "resolve_accounts splits a colon-separated TOOLBOX_ACCOUNTS list" {
+  run bash -c "export TOOLBOX_ACCOUNTS='${TEST_TEMP}/a:${TEST_TEMP}/b/.claude'; source '$SETUP_SH'; resolve_accounts; printf '%s\n' \"\${ACCOUNTS[@]}\""
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "${TEST_TEMP}/a" ]
+  [ "${lines[1]}" = "${TEST_TEMP}/b/.claude" ]
+}
