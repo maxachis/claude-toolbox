@@ -20,6 +20,11 @@ LINK_DIRS=("commands" "skills" "agents" "configs")
 SETTINGS_SRC="${SCRIPT_DIR}/configs/settings/global.json"
 SETTINGS_DEST="${CLAUDE_DIR}/settings.json"
 
+# Global MCP config to merge into ~/.claude.json (under the "mcpServers" key).
+# Overridable via env for testing.
+MCP_SRC="${TOOLBOX_MCP_SRC:-${SCRIPT_DIR}/configs/mcp/global.json}"
+MCP_DEST="${TOOLBOX_MCP_DEST:-${HOME}/.claude.json}"
+
 # Global CLAUDE.md to link into ~/.claude/CLAUDE.md
 CLAUDE_MD_SRC="${SCRIPT_DIR}/configs/CLAUDE.md"
 CLAUDE_MD_DEST="${CLAUDE_DIR}/CLAUDE.md"
@@ -81,17 +86,17 @@ find_python() {
   return 1
 }
 
-merge_settings() {
-  local src="$1" dest="$2"
+merge_json() {
+  local src="$1" dest="$2" label="$3"
 
   if [[ ! -f "$src" ]]; then
-    warn "Settings source not found — skipping merge"
+    warn "${label} source not found — skipping merge"
     return
   fi
 
   local py
   py="$(find_python)" || {
-    warn "Python not found — skipping settings merge"
+    warn "Python not found — skipping ${label} merge"
     return
   }
 
@@ -143,10 +148,36 @@ with open(dest_path, "w") as f:
 PYEOF
 
   if [[ $? -eq 0 ]]; then
-    info "settings.json merged"
+    info "${label} merged"
   else
-    error "Settings merge failed"
+    error "${label} merge failed"
   fi
+}
+
+merge_mcp() {
+  local src="$1" dest="$2"
+
+  if [[ ! -f "$src" ]]; then
+    warn "MCP config source not found — skipping merge"
+    return
+  fi
+
+  local py
+  py="$(find_python)" || {
+    warn "Python not found — skipping MCP config merge"
+    return
+  }
+
+  # Skip when no servers are defined, so we don't back up the (often large)
+  # global ~/.claude.json just to merge an empty object into it.
+  local has_servers
+  has_servers="$("$py" -c 'import json,sys; print("1" if json.load(open(sys.argv[1])).get("mcpServers") else "0")' "$src" 2>/dev/null || echo 0)"
+  if [[ "$has_servers" != "1" ]]; then
+    info "MCP config has no servers — nothing to merge"
+    return
+  fi
+
+  merge_json "$src" "$dest" "mcpServers"
 }
 
 do_link() {
@@ -216,7 +247,10 @@ do_link() {
   fi
 
   # Merge global settings
-  merge_settings "$SETTINGS_SRC" "$SETTINGS_DEST"
+  merge_json "$SETTINGS_SRC" "$SETTINGS_DEST" "settings.json"
+
+  # Merge global MCP servers into ~/.claude.json
+  merge_mcp "$MCP_SRC" "$MCP_DEST"
 
   # Link toolbox root into ~/.claude/toolbox (used by devcontainer mounts)
   local toolbox_link="${CLAUDE_DIR}/toolbox"
@@ -327,21 +361,25 @@ do_unlink() {
   info "Done! Links removed."
 }
 
-case "${1:-}" in
-  --unlink)
-    do_unlink
-    ;;
-  --skip-validation)
-    SKIP_VALIDATION=1 do_link
-    ;;
-  --help|-h)
-    echo "Usage: $0 [--unlink | --skip-validation]"
-    echo ""
-    echo "  (no args)            Validate agents, then link toolbox into ~/.claude/"
-    echo "  --skip-validation    Link without validating agents"
-    echo "  --unlink             Remove links and restore backups"
-    ;;
-  *)
-    do_link
-    ;;
-esac
+# Only dispatch when executed directly; when sourced (e.g. by tests), expose the
+# functions above without running anything.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  case "${1:-}" in
+    --unlink)
+      do_unlink
+      ;;
+    --skip-validation)
+      SKIP_VALIDATION=1 do_link
+      ;;
+    --help|-h)
+      echo "Usage: $0 [--unlink | --skip-validation]"
+      echo ""
+      echo "  (no args)            Validate agents, then link toolbox into ~/.claude/"
+      echo "  --skip-validation    Link without validating agents"
+      echo "  --unlink             Remove links and restore backups"
+      ;;
+    *)
+      do_link
+      ;;
+  esac
+fi

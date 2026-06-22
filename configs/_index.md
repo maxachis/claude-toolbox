@@ -16,7 +16,8 @@ Custom keyboard shortcuts.
 
 ### [MCP](mcp/)
 Model Context Protocol server configurations.
-- GitHub integration
+- `global.json` — toolbox-managed global servers, merged into `~/.claude.json` on install
+- `github.mcp.json` — standalone GitHub integration template
 - Database connections
 
 ### [Devcontainer](devcontainer/)
@@ -42,6 +43,12 @@ cp configs/keybindings/vim-style.json ~/.claude/keybindings.json
 ```
 
 ### MCP Servers
+
+Add servers to `configs/mcp/global.json` under `mcpServers`, then run
+`claude-toolbox install` (or `./setup.sh`). They are deep-merged into the
+`mcpServers` key of `~/.claude.json` — the global config Claude Code reads —
+backing the file up first. An empty `mcpServers` is a no-op. Standalone
+templates can still be copied manually:
 
 ```bash
 cp configs/mcp/github.mcp.json ~/.claude/
