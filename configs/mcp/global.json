@@ -13,6 +13,10 @@
       "command": "uvx",
       "args": ["mcp-server-fetch"]
     },
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
     "github": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/"
