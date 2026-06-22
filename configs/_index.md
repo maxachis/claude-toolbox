@@ -19,7 +19,6 @@ Model Context Protocol server configurations.
 - `global.json` — toolbox-managed global servers, merged into `~/.claude.json` on install
 - `global.local.json` — gitignored overlay for machine-specific / secret-bearing servers (API keys), merged on top
 - `global.local.example.json` — template for the overlay above
-- `github.mcp.json` — standalone GitHub integration template
 
 ### [Devcontainer](devcontainer/)
 `.devcontainer/devcontainer.json` templates for common project types.
@@ -58,12 +57,6 @@ later "failed to connect".
 them in the committed `global.json`. Copy `global.local.example.json` to
 `global.local.json` (gitignored) and add them there — it's merged *on top* of
 `global.json`, so its values win on conflict and the key stays out of git.
-
-Standalone templates can still be copied manually:
-
-```bash
-cp configs/mcp/github.mcp.json ~/.claude/
-```
 
 ## Configuration Files
 

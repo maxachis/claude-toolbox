@@ -90,10 +90,13 @@ cp configs/keybindings/vim-style.json ~/.claude/keybindings.json
 
 ### MCP Servers
 
-Configure Model Context Protocol servers:
+Add servers to `configs/mcp/global.json` (or the gitignored
+`configs/mcp/global.local.json` overlay for secret-bearing / machine-specific
+ones), then run `claude-toolbox install`. They are merged into the `mcpServers`
+key of `~/.claude.json`:
 
 ```bash
-cp configs/mcp/github.mcp.json ~/.claude/
+claude-toolbox install
 ```
 
 ## Bundles
