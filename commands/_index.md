@@ -24,6 +24,7 @@ All slash commands organized by category. Copy individual commands or entire cat
 | `/security-audit` | [security](security/) | Audit code for security vulnerabilities |
 | `/auth` | [security](security/) | Implement authentication and authorization |
 | `/test` | [testing](testing/) | Generate tests for code |
+| `/test-audit` | [testing](testing/) | Audit existing tests for coverage gaps |
 | `/debug` | [testing](testing/) | Diagnose and fix bugs |
 | `/doc` | [documentation](documentation/) | Generate or update documentation |
 | `/explain` | [documentation](documentation/) | Explain how code works |

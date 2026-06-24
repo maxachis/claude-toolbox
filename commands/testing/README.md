@@ -7,6 +7,7 @@ Commands for testing and debugging.
 | Command | Description |
 |---------|-------------|
 | `test` | Generate tests for code |
+| `test-audit` | Audit existing tests for coverage gaps |
 | `debug` | Diagnose and fix bugs |
 
 ## Usage
@@ -17,6 +18,9 @@ Commands for testing and debugging.
 
 # Generate tests for a function
 /test validateEmail
+
+# Audit existing tests for gaps, then optionally fill them
+/test-audit src/utils/validation.ts
 
 # Debug an issue
 /debug "TypeError: Cannot read property 'id' of undefined"
