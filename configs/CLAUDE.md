@@ -5,6 +5,30 @@
 
 When committing to git, default to ssh rather than HTTPS.
 
+## Delegate Implementation to Sonnet When Running as Opus
+
+When you are running as an Opus model, act as the planner/reviewer and delegate
+the mechanical implementation to a Sonnet subagent (the `Agent` tool with
+`model: sonnet`). Opus tokens cost several times Sonnet's, so reserve Opus for
+what needs its judgment and let Sonnet do the typing.
+
+- **Keep on Opus:** understanding the problem, designing the approach,
+  architecture decisions against hard constraints, and reviewing the subagent's
+  diff before it lands.
+- **Delegate to Sonnet:** implementation that is well-specified and largely
+  pattern-following — mirror an existing module, add a CRUD endpoint, wire a flag
+  through, write tests to a stated spec. Give the subagent a tight brief: the
+  files/patterns to mirror, the exact test/build commands, and the constraints it
+  must honor.
+- Use a fresh `general-purpose` (or task-specific) agent with `model: sonnet`. A
+  `fork` cannot downgrade the model (it always inherits the parent), so it saves
+  no tokens.
+- **Skip delegation** when the work is trivial (a one-line edit costs more to
+  brief than to do) or when the implementation itself needs sustained
+  Opus-level judgment (subtle concurrency, security-critical logic, or a design
+  still being discovered while coding).
+- Always review what Sonnet returns — you own the result.
+
 ## Named Arguments at Call Sites
 
 When a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind its arguments by name at the call site by construction — via keyword-only parameters where the language supports them, or an options object / config struct / builder where it doesn't.
@@ -12,6 +36,15 @@ When a function takes more than ~two parameters, any boolean flag, or two adjace
 ## Avoid Monolithic Files
 
 When a file you're working in has grown large *and* is mixing unrelated concerns (e.g. IO, business logic, and presentation in one module), don't silently keep adding to it. Surface this to the user: name the distinct concerns you see and propose a concrete split. Do not refactor without approval — file splits ripple through imports and history. Size alone isn't the trigger — a long but cohesive file is fine; the signal is *multiple responsibilities* that have outgrown one module.
+
+This is the file-level sibling of **Keep Code at One Level of Abstraction** below.
+
+## Keep Code at One Level of Abstraction
+
+Within a single function or block, keep statements at a consistent conceptual level. Don't interleave high-level orchestration (named domain steps) with low-level mechanics (loop bookkeeping, string/byte manipulation, manual index math, error-handling plumbing). When a block of low-level detail appears amid high-level steps, extract it behind a descriptively named function so the body reads as one coherent narrative.
+
+- For code you're **authoring**, extract as you write — no need to ask. Apply this conservatively: the trigger is a *block* of low-level detail that obscures the high-level flow, not the mere presence of any lower-level statement. A guard clause, an early return, or a single short loop in an otherwise high-level function is fine. Don't fragment logic into a swarm of one-line functions.
+- For **existing** code, treat it like *Avoid Monolithic Files* above: surface the mismatch and propose the extraction rather than silently refactoring.
 
 ## Debugging Screenshots
 
