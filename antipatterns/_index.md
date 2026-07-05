@@ -26,6 +26,7 @@ to a heuristic when it needs reading comprehension. Many entries carry both.
 | ID | Category | Severity | Summary |
 |----|----------|----------|---------|
 | `nonstandard-query-param` | api-conventions | low | Invents a short/idiosyncratic query-param name instead of the conventional one |
+| `unexplained-boolean-call-site` | readability | low | Consumes a bool return whose meaning isn't in the callee's name inline as an `if` condition, instead of an explaining variable |
 
 ## Auditing a repo
 
