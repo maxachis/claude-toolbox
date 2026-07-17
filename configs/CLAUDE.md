@@ -125,6 +125,29 @@ When this happens, note it in your final remarks before returning control to the
 
 Keep the bar high: report only friction that was meaningful and avoidable, not routine work or expected effort. If an obstacle is a recurring project gotcha, also record it per **Learning from Mistakes** below.
 
+## Park Open Items in the Session Task List
+
+When you surface something outside the current task — a bug noticed in passing, a
+design concern, a question you want me to answer — do not leave it in prose alone.
+Prose gets compacted away or buried as the conversation drifts. File it in the
+session task list (`TaskCreate`) so it survives.
+
+- **Prefix the subject with `OPEN:`** — e.g. `OPEN: decide whether retries should
+  be capped`. The prefix is load-bearing: after compaction the subject may be all
+  that's left, and an unprefixed pending task reads as work you were told to do.
+- **Never claim, start, or complete an `OPEN:` item on your own.** They are mine to
+  resolve. Leave them pending and unowned until I say otherwise. When I decide,
+  either convert it into a real task or delete it.
+- **Check `TaskList` before filing** so the same observation doesn't accumulate
+  three times across a long session.
+- **Park it, don't pursue it.** Filing an item is not permission to act on it, and
+  it doesn't license a detour from what I actually asked for.
+- Only park what's worth my decision. Passing thoughts, and things you already
+  handled, don't belong here.
+
+This is session-scoped state, not memory — see **Memory: Cache Rediscovery, Not
+State** below for why open items must never be written there.
+
 ## Test-Driven Development
 
 When implementing new functionality or fixing bugs, follow red-green TDD:
