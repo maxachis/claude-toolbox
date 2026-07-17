@@ -137,6 +137,20 @@ When implementing new functionality or fixing bugs, follow red-green TDD:
 - Do not write implementation code without a corresponding test.
 - Keep the red-green-refactor cycles small and focused.
 
+## Memory: Cache Rediscovery, Not State
+
+Memory exists to spare me *rediscovery* — where a thing lives, how it's checked, what the convention is — not to spare a cheap verification call. The expensive part of "is staging deployed?" was never the `curl`; it's knowing which box and which endpoint. Cache the hunt, not the answer.
+
+Before writing a memory, ask: **can this become false without a commit?** If yes it is state, not knowledge — someone can fix a webhook at 2am and nothing in the repo changes, so there is no moment where I could have noticed it drift. Don't assert it.
+
+- **Record the check, not the result.** Not "staging auto-deploy is broken" but "to check whether staging deployed: `curl -s https://staging/…/version`, compare the SHA to origin/main." The endpoint is durable; the verdict isn't.
+- **The `description:` states a topic, never a claim.** It is the recall surface — the one line matched for relevance before the body is ever opened — so a description asserting mutable state goes on asserting it long after the body has been corrected. Write "how SSH ingress is configured on X", not "SSH on X is hardened".
+- **Corrections rewrite in place.** Never append a fix below a stale claim; a memory is not a changelog. When a file's top contradicts its own bottom, the top is what gets believed.
+- **Delete superseded memories** rather than annotating them as superseded.
+- **Don't lean on metadata to stay safe.** Dates, re-check commands, and "delete once verified" markers do not make a stale claim safe — nothing runs them at recall time. If a fact needs a freshness caveat to be trustworthy, it doesn't belong in memory as a claim.
+
+**Read-time counterpart:** a memory describing mutable external state — deploy status, service health, credentials, resource config, DB contents — is a **lead, not a fact**. Verify it before acting, and fix the memory in the same pass. Memories describing conventions, locations, architecture, and my preferences are trusted without re-checking.
+
 ## Learning from Mistakes
 
 ### When to record a mistake
