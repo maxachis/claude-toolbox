@@ -5,6 +5,25 @@
 
 When committing to git, default to ssh rather than HTTPS.
 
+## Time Zone
+
+When presenting times to me in conversation, use US Eastern Time
+(America/New_York, accounting for EST/EDT) rather than UTC. This applies only
+to times shown in your responses — do not alter timestamps in code, commits,
+logs, or data, which should stay in their native zone (usually UTC).
+
+## Lead with Behavior, Not Identifiers
+
+When you tell me what you did, found, or plan to do, describe it in terms of behavior and domain concepts — what changes about how the system acts, and why. A function, class, module, or file name only communicates to a reader who already holds it in memory. I usually don't: when you wrote the code, its internal names are yours, not mine, and a sentence built around one is a sentence I skim past.
+
+- **Open with the effect.** "Logins now survive a server restart" comes before — and often instead of — "`SessionStore.persist()` now writes to Redis."
+- **Identifiers are locators, not subjects.** Once the point has landed in prose, a trailing `path/to/file.py:42` earns its place; I can click it. A sentence whose grammatical subject is a symbol I've never seen has not.
+- **Name a symbol when I have to act on it** — I'll call it, configure it, or you're asking me to pick between options — and say in the same breath why it matters to me.
+- **Prefer the domain word to the code word.** If the class is `RetryPolicy`, say "the retry rules," unless the gap between the concept and that particular class is itself the point.
+- This applies to questions and plans as much as to summaries: "should the cache expire on write or on read?" rather than "should `_invalidate` be called from `put` or `get`?"
+
+A useful test before you send: if I have no memory of any name in this paragraph, does it still tell me what happened? If not, rewrite the first sentence.
+
 ## Delegate Implementation to Sonnet When Running as Opus
 
 When you are running as an Opus model, act as the planner/reviewer and delegate
@@ -46,9 +65,46 @@ Within a single function or block, keep statements at a consistent conceptual le
 - For code you're **authoring**, extract as you write — no need to ask. Apply this conservatively: the trigger is a *block* of low-level detail that obscures the high-level flow, not the mere presence of any lower-level statement. A guard clause, an early return, or a single short loop in an otherwise high-level function is fine. Don't fragment logic into a swarm of one-line functions.
 - For **existing** code, treat it like *Avoid Monolithic Files* above: surface the mismatch and propose the extraction rather than silently refactoring.
 
+## Complex Payloads Don't Belong in Shell Strings
+
+When a Bash command carries a payload with its own quoting or line structure — SQL, JSON, a script body, anything with nested or mixed quotes — do not inline it into the command string. Two layers of quoting (the shell's and the payload's) will eventually collide, and the failure is usually silent or misleading rather than a clean syntax error.
+
+Instead, pass it out-of-band:
+
+- **Quoted heredoc** for a literal payload: `sqlite3 db.sqlite <<'SQL' ... SQL`. Quoting the delimiter (`<<'SQL'`) stops the shell from expanding `$`, backticks, and `\` inside the body.
+- **A temp file** when the payload is reused, is large, or the tool wants a path.
+- The tool's own `--file` / `-f` / stdin flag when it has one.
+
+Use an unquoted heredoc (`<<SQL`) only when you *want* shell interpolation into the body, and never with untrusted content.
+
+This applies to writing files too: prefer the Write tool over `cat > f <<EOF`.
+
 ## Debugging Screenshots
 
 After reading a debugging screenshot (e.g. one taken via Playwright MCP), delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
+
+## Work in Your Own Worktree
+
+A checkout has exactly one HEAD. When two sessions share one, whichever switches
+branches moves the other session's branch *and working tree* under it, silently —
+the second session then commits onto the first one's branch, or bases a new branch
+on unrelated commits. Nothing errors; you just notice later, if at all.
+
+So: **before starting work that will create commits in a repo, check whether
+another session may be active in it, and if so work in your own worktree** (the
+`EnterWorktree` tool, or `git worktree add`). Signals another session is live:
+`git branch --show-current` returns a branch you didn't create, unfamiliar recent
+commits or reflog entries, or files changing that you didn't touch.
+
+- **Always verify your branch immediately before committing** — `git branch --show-current`
+  — rather than trusting the branch you checked out earlier in the session. This is
+  cheap and catches the problem regardless of worktrees.
+- **Never** `reset --hard`, force-checkout over, or delete a branch you did not create.
+  If you find someone else's work in your way, say so and re-base your own work off it.
+- Worktrees share the object store and branch refs but **not** untracked files, so
+  `node_modules`/`.venv`/`.env` need reinstalling or symlinking per worktree.
+- They do **not** isolate ports. Two dev servers still collide on the same port; that
+  is a separate problem needing a separate port.
 
 ## Commit Messages
 
