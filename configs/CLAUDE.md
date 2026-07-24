@@ -24,29 +24,42 @@ When you tell me what you did, found, or plan to do, describe it in terms of beh
 
 A useful test before you send: if I have no memory of any name in this paragraph, does it still tell me what happened? If not, rewrite the first sentence.
 
-## Delegate Implementation to Sonnet When Running as Opus
+## Delegate Implementation to Cheaper Models When Running on a Premium Tier
 
-When you are running as an Opus model, act as the planner/reviewer and delegate
-the mechanical implementation to a Sonnet subagent (the `Agent` tool with
-`model: sonnet`). Opus tokens cost several times Sonnet's, so reserve Opus for
-what needs its judgment and let Sonnet do the typing.
+When you are running as a premium-tier model — Opus, Fable, or any future model
+priced above Sonnet — act as the planner/reviewer and delegate mechanical
+implementation to a cheaper subagent (the `Agent` tool with an explicit
+`model:`). Rough price ladder (per MTok in/out, as of mid-2026): Fable $10/$50,
+Opus $5/$25, Sonnet $3/$15, Haiku $1/$5. The gap is largest at the top — a
+Fable session typing boilerplate is the most expensive way to produce it in the
+whole lineup — and delegating also keeps the premium session's context clean
+and shortens its wall-clock time.
 
-- **Keep on Opus:** understanding the problem, designing the approach,
-  architecture decisions against hard constraints, and reviewing the subagent's
-  diff before it lands.
-- **Delegate to Sonnet:** implementation that is well-specified and largely
-  pattern-following — mirror an existing module, add a CRUD endpoint, wire a flag
-  through, write tests to a stated spec. Give the subagent a tight brief: the
-  files/patterns to mirror, the exact test/build commands, and the constraints it
-  must honor.
-- Use a fresh `general-purpose` (or task-specific) agent with `model: sonnet`. A
-  `fork` cannot downgrade the model (it always inherits the parent), so it saves
-  no tokens.
+The delegation ladder:
+
+- **Keep on the premium model:** understanding the problem, designing the
+  approach, architecture decisions against hard constraints, and reviewing the
+  subagent's diff before it lands.
+- **Delegate to Sonnet (the default target):** implementation that is
+  well-specified and largely pattern-following — mirror an existing module, add
+  a CRUD endpoint, wire a flag through, write tests to a stated spec. Give the
+  subagent a tight brief: the files/patterns to mirror, the exact test/build
+  commands, and the constraints it must honor.
+- **From Fable, delegate to Opus (`model: opus`)** when implementation is
+  scoped and well-specified but still judgment-heavy — a subtle refactor, a
+  tricky-but-bounded algorithm — work that would strain Sonnet but doesn't need
+  Fable-level reasoning.
+- Use a fresh `general-purpose` (or task-specific) agent with an explicit
+  `model:`. A `fork` cannot downgrade the model (it always inherits the
+  parent), so it saves no tokens — and a fork of a Fable session bills at Fable
+  rates.
 - **Skip delegation** when the work is trivial (a one-line edit costs more to
-  brief than to do) or when the implementation itself needs sustained
-  Opus-level judgment (subtle concurrency, security-critical logic, or a design
-  still being discovered while coding).
-- Always review what Sonnet returns — you own the result.
+  brief than to do) or when the implementation itself needs the premium model's
+  sustained judgment (subtle concurrency, security-critical logic, or a design
+  still being discovered while coding). When running as Opus, the Sonnet price
+  gap is modest (~1.7×), so lean on delegation mainly for context hygiene and
+  parallelism rather than as a strict cost rule.
+- Always review what the subagent returns — you own the result.
 
 ## Named Arguments at Call Sites
 
