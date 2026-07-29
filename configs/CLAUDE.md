@@ -138,28 +138,65 @@ When this happens, note it in your final remarks before returning control to the
 
 Keep the bar high: report only friction that was meaningful and avoidable, not routine work or expected effort. If an obstacle is a recurring project gotcha, also record it per **Learning from Mistakes** below.
 
-## Park Open Items in the Session Task List
+## Park Open Items in the Repo's Worklog
 
 When you surface something outside the current task — a bug noticed in passing, a
 design concern, a question you want me to answer — do not leave it in prose alone.
-Prose gets compacted away or buried as the conversation drifts. File it in the
-session task list (`TaskCreate`) so it survives.
+Prose gets compacted away or buried as the conversation drifts. Write it to disk in
+the repo, as a **worklog entry**, so it survives the session that found it.
 
-- **Prefix the subject with `OPEN:`** — e.g. `OPEN: decide whether retries should
-  be capped`. The prefix is load-bearing: after compaction the subject may be all
-  that's left, and an unprefixed pending task reads as work you were told to do.
-- **Never claim, start, or complete an `OPEN:` item on your own.** They are mine to
-  resolve. Leave them pending and unowned until I say otherwise. When I decide,
-  either convert it into a real task or delete it.
-- **Check `TaskList` before filing** so the same observation doesn't accumulate
-  three times across a long session.
-- **Park it, don't pursue it.** Filing an item is not permission to act on it, and
-  it doesn't license a detour from what I actually asked for.
-- Only park what's worth my decision. Passing thoughts, and things you already
-  handled, don't belong here.
+**Write the entry when you discover the item, not when you start working on it.**
+This is the whole point, and it is the part that gets skipped: discovery-time is
+when the context is free. You have just run the command, read the file, seen why it
+looked wrong. An hour later — or after a compaction — that same entry costs a
+re-investigation to write, and the second version is worse because it reconstructs
+the reasoning instead of recording it.
 
-This is session-scoped state, not memory — see **Memory: Cache Rediscovery, Not
-State** below for why open items must never be written there.
+The entry is one file, and it is **both** the open-item and the record of thinking.
+Do not treat those as separate artifacts:
+
+- **What was observed**, in behavioral terms — what the system does that it
+  shouldn't, or what I have to decide.
+- **The evidence**, concretely: the commands run and their relevant output, the
+  `path/to/file.py:42` references. Enough that the next reader does not re-derive it.
+- **Why it matters**, or why it might not — including "this looks alarming and
+  isn't," which is a valuable entry.
+- **Approaches considered and rejected, with the reason.** This never survives in a
+  diff, and it is what makes an old entry useful: it is how a wrong approach gets
+  diagnosed after the fact, and how trends across many entries become visible.
+- **The resolution**, appended when it lands — the PR, or the decision not to act.
+
+Rules for filing:
+
+- **Where:** the repo's worklog directory if it has one (`docs/worklog/`, or
+  wherever its `CLAUDE.md` says). The entry belongs in the repo whose code it
+  describes, so it travels with that code. **In a repo that has no worklog
+  convention, ask before creating one** — don't invent a top-level directory
+  mid-task. Until I answer, the session task list is the fallback.
+- **Check the existing entries before filing** so the same observation doesn't
+  accumulate three times, and so you find the entry that already explains it.
+- **File it, don't pursue it.** Writing an entry is not permission to act on it,
+  and it doesn't license a detour from what I actually asked for.
+- **Never resolve an entry on your own.** Open items are mine to close. Leave them
+  open until I say otherwise.
+- Only file what's worth keeping. Passing thoughts, and things you already handled
+  inside the task, don't belong here.
+
+**When to escalate an item to the issue tracker instead:** the test is not size or
+effort, it's **whether someone outside this session needs to act on it**. Tracker
+if it needs scheduling, review, acceptance criteria, or I track it as a
+deliverable. Worklog for everything else — including things that will never be
+done, which the tracker has no good resting place for.
+
+**Promote by link, not by copy.** When an entry graduates to a tracked task, the
+task points at the worklog path and the entry records the task id. The tracker owns
+status and scheduling; the repo owns evidence and reasoning. Copying the reasoning
+into both creates two systems of record, and the interesting half then lives in
+whichever one was updated last.
+
+A worklog entry is a durable record, not memory — see **Memory: Cache Rediscovery,
+Not State** below. The same rule applies within an entry: record the check and the
+evidence, and date any claim about mutable state rather than asserting it flatly.
 
 ## Test-Driven Development
 
