@@ -92,9 +92,21 @@ Use an unquoted heredoc (`<<SQL`) only when you *want* shell interpolation into 
 
 This applies to writing files too: prefer the Write tool over `cat > f <<EOF`.
 
+## Look at Visual Changes Before Calling Them Done
+
+When a change alters what actually renders, capture the affected view and look at it before reporting the work complete. Passing tests and a clean diff say nothing about overlapping text, a collapsed container, or an element that silently failed to appear — those are only visible in a picture.
+
+**What triggers this** is a change to rendered output: layout, spacing, sizing, color, typography, new or restructured UI, responsive behavior, or anything whose visual result you are predicting rather than observing. Editing a file that happens to contain UI is not the trigger — a rename, an extracted subcomponent, a logic fix that leaves the render byte-identical needs no screenshot.
+
+**What the look is for** is screening for breakage, not approving the design. Report what is plainly wrong — overlap, clipping, misalignment, a missing or unstyled element, text spilling its container. Do not report back that a design "looks good"; that judgment is mine to make, and a confident all-clear from you is worth less than a specific observation.
+
+**When you can't capture it, say so.** A view may need a running server, a route behind auth, a particular data state, or a browser tool that isn't available. Do not spend meaningful effort fighting the harness to get an image. Stop, state plainly that you could not see the change render, and name what you'd want me to check by eye instead. Silently skipping the check is the failure mode to avoid — an unverified change reported as verified is worse than an honest gap.
+
+Use the project's own way of launching the app where one exists (the `/run` skill, or a documented dev-server command) rather than improvising a harness. Then delete the image per the rule below.
+
 ## Debugging Screenshots
 
-After reading a debugging screenshot (e.g. one taken via Playwright MCP), delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
+After reading a debugging screenshot (e.g. one taken via Playwright MCP, or captured to verify a visual change), delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
 
 ## Work in Your Own Worktree
 
