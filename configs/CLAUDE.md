@@ -65,6 +65,17 @@ The delegation ladder:
 
 When a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind its arguments by name at the call site by construction — via keyword-only parameters where the language supports them, or an options object / config struct / builder where it doesn't.
 
+## No Magic Strings or Numbers
+
+A literal that carries domain meaning — a status value, a key or column name, a route, an env var, an error code, a feature-flag name, a threshold, a duration, a limit — belongs in a named constant defined once, with every use referencing that name.
+
+Strings are the more urgent half, because they fail quietly. A mistyped number usually blows up; a mistyped `"pending"` just silently never matches, and the bug surfaces as absent behavior somewhere far away. So prefer the strongest construct the language offers — an enum, a literal union type, a frozen constants module — over a bare string repeated at call sites, and let the compiler or type checker catch the typo instead of a user.
+
+- **Name the *why*, not the *what*.** `RETRY_BACKOFF_CEILING_SECONDS = 30` earns its place; `THIRTY = 30` doesn't.
+- **Define it where the concept lives**, and import it — a constant duplicated across three modules is the same magic value with extra steps.
+- **Leave inline:** genuinely self-evident values (`0`, `1`, `-1` as bounds or increments, empty checks), one-off literals inside the module that owns the concept, human-facing log and error message text, and test fixtures where spelling the value out *is* what makes the assertion readable.
+- For code you're **authoring**, extract as you write — no need to ask. For **existing** code, follow the sibling rules below: surface the duplication and propose the extraction rather than silently refactoring.
+
 ## Avoid Monolithic Files
 
 When a file you're working in has grown large *and* is mixing unrelated concerns (e.g. IO, business logic, and presentation in one module), don't silently keep adding to it. Surface this to the user: name the distinct concerns you see and propose a concrete split. Do not refactor without approval — file splits ripple through imports and history. Size alone isn't the trigger — a long but cohesive file is fine; the signal is *multiple responsibilities* that have outgrown one module.
