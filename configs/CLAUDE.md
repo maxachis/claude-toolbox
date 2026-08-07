@@ -184,10 +184,33 @@ Do not treat those as separate artifacts:
   `path/to/file.py:42` references. Enough that the next reader does not re-derive it.
 - **Why it matters**, or why it might not — including "this looks alarming and
   isn't," which is a valuable entry.
-- **Approaches considered and rejected, with the reason.** This never survives in a
-  diff, and it is what makes an old entry useful: it is how a wrong approach gets
-  diagnosed after the fact, and how trends across many entries become visible.
+- **Approaches considered and rejected, with the reason** — and **who** rejected
+  it. "Ruled out polling; too slow" reads the same whether I decided it or you did,
+  but the two mean opposite things to the next session: my call is settled, yours is
+  a hypothesis a later agent with better information should feel free to overturn.
+  This never survives in a diff, and it is what makes an old entry useful: it is how
+  a wrong approach gets diagnosed after the fact, and how trends across many entries
+  become visible.
 - **The resolution**, appended when it lands — the PR, or the decision not to act.
+
+**Mark what I told you, not what you found.** Your own observations arrive with
+commands and file references attached — inherently re-checkable, so their
+authorship is implied and uninteresting. The default is "agent-derived and
+re-derivable," and restating that on every entry is noise. Label the exception:
+
+- **Constraints and environment facts I supplied** that can't be verified from the
+  repo — a deadline, a hand-edited firewall rule, a platform we're not supporting.
+  Give these a `> Stated by Max; not verifiable from the repo` line where they
+  appear. It tells the next reader not to go hunting for confirmation, and not to
+  weigh its own inference as equally authoritative.
+- **Decisions I made**, per the bullet above — name me, rather than writing them in
+  the same first-person voice as your own reasoning.
+
+Attribution is not permanence: something I stated about mutable external state is
+still a lead to re-verify, not a fact. And never add an `author:` field or a
+human-vs-agent tag to every entry — a label that's the same on 95% of entries
+carries no signal and makes provenance look handled while the two cases above go
+unmarked anyway.
 
 Rules for filing:
 
