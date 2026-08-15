@@ -161,6 +161,46 @@ When this happens, note it in your final remarks before returning control to the
 
 Keep the bar high: report only friction that was meaningful and avoidable, not routine work or expected effort. If an obstacle is a recurring project gotcha, also record it per **Learning from Mistakes** below.
 
+## Hold the Primary Goal, and Report Against It
+
+A session has one **primary goal**: the objective set by my most recent goal-setting
+instruction. It stays in force until I replace it. Nothing you encounter while
+working promotes itself into a new primary goal — not an interesting discovery, not
+a bug you trip over, not a failing test in unrelated code, not a refactor that would
+obviously help. Those are *side observations*, and the response to a side
+observation is to record it and keep going. Ask me before changing course; don't
+infer a new goal from what you found.
+
+When you return control after an **extended batch of autonomous work** — several
+tool calls, or any change to files — lead your response with two headers, then
+whatever prose the situation needs:
+
+**Primary Goal** — restate the goal in one line, then say concretely what moved
+between my last instruction and now, and what remains. A few sentences at most.
+Write it in behavioral terms per *Lead with Behavior, Not Identifiers* above: what
+the system does differently now, not which files you touched. If nothing moved, say
+that plainly and say why. If what you did doesn't match the goal you just restated,
+that mismatch is the most important thing on the screen — name it rather than
+letting the prose smooth it over.
+
+**Side Observations** — a numbered list, each item a sentence or two. **Zero side
+observations is a normal, expected outcome**; when there are none, write "None" and
+move on. Do not pad this section to look thorough — a manufactured observation is
+worse than an empty list, because it costs me a read to discard.
+
+After the two headers, use ordinary prose for anything longer: detail, evidence,
+open questions, obstacles per *Reporting Avoidable Obstacles* above.
+
+Scope this to real work batches. A question, a short answer, a one-line edit, or a
+conversational turn gets a normal reply — a rule applied ceremonially to trivial
+turns is one that erodes into being ignored on the turns that matter.
+
+**Relationship to the worklog below:** the report is the *surface* — what I see now,
+then scroll past. The worklog is the *durable record*. A side observation worth
+keeping gets filed as a worklog entry at the moment you notice it, and the report
+cites the path. One that isn't worth keeping just gets its line in the report and
+dies there. Don't maintain the same item as prose in both.
+
 ## Park Open Items in the Repo's Worklog
 
 When you surface something outside the current task — a bug noticed in passing, a
