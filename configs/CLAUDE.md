@@ -231,7 +231,30 @@ Do not treat those as separate artifacts:
   This never survives in a diff, and it is what makes an old entry useful: it is how
   a wrong approach gets diagnosed after the fact, and how trends across many entries
   become visible.
-- **The resolution**, appended when it lands — the PR, or the decision not to act.
+- **The resolution**, recorded when it lands — the PR, or the decision not to act.
+
+**Updating an entry is two motions, not one.** New facts append at the bottom; the
+claims at the top get rewritten *in the same pass*. Appending alone is the natural
+motion and it silently rots the entry: an update arrives as "here is what happened
+on the 12th", lands at the bottom, and the paragraph three screens up goes on
+asserting the opposite in the present tense with nothing marking it stale. So when
+the bottom of an entry contradicts the top, **the top is what's wrong** — go fix
+that sentence. Do not add a third paragraph reconciling the first two. This is
+**Corrections rewrite in place** from the memory section below, and it binds here
+for the same reason: a reader who stops halfway down must not be misinformed.
+
+Record the *shape* of a correction, not just the corrected fact. A line naming how
+the mistake was possible — "the root of both errors was reading a code default as
+though it were the deployed value" — is the most useful thing an entry can carry,
+because it generalizes and the fact doesn't.
+
+**An entry is one item.** Two things follow, and both are maintenance you have to
+do deliberately because neither happens on its own. When investigation moves and
+the title no longer describes what the entry is about, rename the file to match and
+fix the inbound links — a stale slug is how the next reader fails to find the entry
+that already explains their problem. And when two items are sharing a file because
+they share a *resource* rather than a cause, split them; otherwise the resolved
+half can never be archived without burying the open half with it.
 
 **Mark what I told you, not what you found.** Your own observations arrive with
 commands and file references attached — inherently re-checkable, so their
