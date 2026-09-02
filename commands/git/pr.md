@@ -13,6 +13,8 @@ Create a pull request for the current branch.
 
 ## Instructions
 
+0. **Get the user's go-ahead before creating the PR.** Opening a PR starts required checks and requests review, so it is the user's call, not yours — every time, regardless of how small the change is. Do the prep below, show them the diffstat and the title and body you intend to use, and wait for an explicit OK before step 5. Committing and pushing the branch beforehand is fine and does not need asking; a draft PR is the same outward-facing action and does not satisfy this.
+
 1. Check current branch and ensure it's not main/master
 2. Run `git log` to see commits since branching from base
 3. Run `git diff <base>...HEAD` to see all changes
