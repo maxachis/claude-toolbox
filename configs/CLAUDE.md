@@ -7,7 +7,7 @@ When committing to git, default to ssh rather than HTTPS.
 
 ## Time Zone
 
-When presenting times to me in conversation, use US Eastern Time
+When presenting times in conversation, use US Eastern Time
 (America/New_York, accounting for EST/EDT) rather than UTC. This applies only
 to times shown in your responses — do not alter timestamps in code, commits,
 logs, or data, which should stay in their native zone (usually UTC).
@@ -67,7 +67,7 @@ When a function takes more than ~two parameters, any boolean flag, or two adjace
 
 ## No Magic Strings or Numbers
 
-A literal that carries domain meaning — a status value, a key or column name, a route, an env var, an error code, a feature-flag name, a threshold, a duration, a limit — belongs in a named constant defined once, with every use referencing that name.
+A literal that carries domain meaning — a status value, a key or column name, a route, an env var, an error code, a feature-flag name, a threshold, a duration, a limit — MUST exist in named constant defined once, with every use referencing that name.
 
 Strings are the more urgent half, because they fail quietly. A mistyped number usually blows up; a mistyped `"pending"` just silently never matches, and the bug surfaces as absent behavior somewhere far away. So prefer the strongest construct the language offers — an enum, a literal union type, a frozen constants module — over a bare string repeated at call sites, and let the compiler or type checker catch the typo instead of a user.
 
@@ -105,11 +105,11 @@ This applies to writing files too: prefer the Write tool over `cat > f <<EOF`.
 
 ## Look at Visual Changes Before Calling Them Done
 
-When a change alters what actually renders, capture the affected view and look at it before reporting the work complete. Passing tests and a clean diff say nothing about overlapping text, a collapsed container, or an element that silently failed to appear — those are only visible in a picture.
+When a change alters what renders, you MUST capture the affected view and look at it before reporting the work complete. Passing tests and a clean diff say nothing about overlapping text, a collapsed container, or an element that silently failed to appear — those are only visible in a picture.
 
 **What triggers this** is a change to rendered output: layout, spacing, sizing, color, typography, new or restructured UI, responsive behavior, or anything whose visual result you are predicting rather than observing. Editing a file that happens to contain UI is not the trigger — a rename, an extracted subcomponent, a logic fix that leaves the render byte-identical needs no screenshot.
 
-**What the look is for** is screening for breakage, not approving the design. Report what is plainly wrong — overlap, clipping, misalignment, a missing or unstyled element, text spilling its container. Do not report back that a design "looks good"; that judgment is mine to make, and a confident all-clear from you is worth less than a specific observation.
+**Screen for breakage**. Report what is plainly wrong — overlap, clipping, misalignment, a missing or unstyled element, text spilling its container. 
 
 **When you can't capture it, say so.** A view may need a running server, a route behind auth, a particular data state, or a browser tool that isn't available. Do not spend meaningful effort fighting the harness to get an image. Stop, state plainly that you could not see the change render, and name what you'd want me to check by eye instead. Silently skipping the check is the failure mode to avoid — an unverified change reported as verified is worse than an honest gap.
 
@@ -117,7 +117,7 @@ Use the project's own way of launching the app where one exists (the `/run` skil
 
 ## Debugging Screenshots
 
-After reading a debugging screenshot (e.g. one taken via Playwright MCP, or captured to verify a visual change), delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
+After reading a debugging screenshot (e.g. one taken via Playwright MCP, or captured to verify a visual change), you MUST delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
 
 ## Work in Your Own Worktree
 
@@ -150,17 +150,6 @@ Write commit subject lines in [Conventional Commits](https://www.conventionalcom
 - Keep the subject in the imperative mood and under ~72 characters.
 - Use the body to explain *what* and *why* when the change isn't self-evident from the subject.
 
-## Reporting Avoidable Obstacles
-
-While executing a request, you may hit friction that is both **substantial and preventable** — e.g. a straightforward change trips a footgun, or you spend significant effort hunting for something that should have been easy to find, or a tool/setup behaves surprisingly.
-
-When this happens, note it in your final remarks before returning control to the user. For each obstacle, briefly state:
-
-- **What** the obstacle was
-- **A concrete recommendation** to avoid it next time (a doc or comment to add, a config to change, a convention to record)
-
-Keep the bar high: report only friction that was meaningful and avoidable, not routine work or expected effort. If an obstacle is a recurring project gotcha, also record it per **Learning from Mistakes** below.
-
 ## Hold the Primary Goal, and Report Against It
 
 A session has one **primary goal**: the objective set by my most recent goal-setting
@@ -189,31 +178,45 @@ move on. Do not pad this section to look thorough — a manufactured observation
 worse than an empty list, because it costs me a read to discard.
 
 After the two headers, use ordinary prose for anything longer: detail, evidence,
-open questions, obstacles per *Reporting Avoidable Obstacles* above.
+open questions, obstacles per *Where Findings Go* below.
 
 Scope this to real work batches. A question, a short answer, a one-line edit, or a
 conversational turn gets a normal reply — a rule applied ceremonially to trivial
 turns is one that erodes into being ignored on the turns that matter.
 
-**Relationship to the worklog below:** the report is the *surface* — what I see now,
-then scroll past. The worklog is the *durable record*. A side observation worth
-keeping gets filed as a worklog entry at the moment you notice it, and the report
-cites the path. One that isn't worth keeping just gets its line in the report and
-dies there. Don't maintain the same item as prose in both.
+## Where Findings Go
 
-## Park Open Items in the Repo's Worklog
+A side observation has exactly one home. Pick it by what the item *needs*, not by
+how interesting it was:
 
-When you surface something outside the current task — a bug noticed in passing, a
-design concern, a question you want me to answer — do not leave it in prose alone.
-Prose gets compacted away or buried as the conversation drifts. Write it to disk in
-the repo, as a **worklog entry**, so it survives the session that found it.
+| The item is... | It goes... |
+|---|---|
+| something **someone outside this session** must act on — it needs scheduling, review, or acceptance criteria, or I track it as a deliverable | the issue tracker, linked to its worklog entry |
+| an open question, a decision owed, a defect you are deliberately not fixing — anything I'd otherwise have to re-derive | a worklog entry, cited by path in your report |
+| a recurring gotcha — a convention you only found by violating it, an undocumented setup step | the project's `CLAUDE.md` under `## Mistakes` — or your auto-memory `mistakes.md` when it isn't project-specific. Format per *Learning from Mistakes* below |
+| friction that was **substantial and preventable** — a straightforward change tripping a footgun, real effort spent hunting for something that should have been easy, a tool behaving surprisingly | one line in your final remarks: what the obstacle was, plus one concrete recommendation to avoid it next time |
+| already handled inside this change, or a passing thought | nowhere durable. A comment at the line someone would next edit, or the PR body, and then let it go |
 
-**Write the entry when you discover the item, not when you start working on it.**
-This is the whole point, and it is the part that gets skipped: discovery-time is
-when the context is free. You have just run the command, read the file, seen why it
-looked wrong. An hour later — or after a compaction — that same entry costs a
-re-investigation to write, and the second version is worse because it reconstructs
-the reasoning instead of recording it.
+When an item fits two rows, put it in the more durable home and point at it from
+the other. Three rules bind across all of them:
+
+- **File at discovery time**, not when you get around to acting on it — that is
+  when the context is free. You have just run the command and seen why it looked
+  wrong. An hour later, or after a compaction, the same entry costs a
+  re-investigation to write, and the second version is worse because it
+  reconstructs the reasoning instead of recording it.
+- **File it, don't pursue it.** Recording an item is not permission to act on it,
+  and it doesn't license a detour from what I actually asked for.
+- **Don't file it twice.** The report is the *surface* — what I see now, then
+  scroll past. The worklog and the tracker are the *durable record*. An item that
+  earns a durable home gets a **pointer** in the report, not a second copy of the
+  prose.
+
+## Writing a Worklog Entry
+
+Prose gets compacted away or buried as the conversation drifts, so an item that
+outlives the session goes to disk in the repo, where it travels with the code it
+describes.
 
 The entry is one file, and it is **both** the open-item and the record of thinking.
 Do not treat those as separate artifacts:
@@ -277,25 +280,27 @@ unmarked anyway.
 
 Rules for filing:
 
+- **Open with a two-line lede** — the observation in one sentence, where it stands
+  in one sentence — then let the body run as long as the item deserves. The lede is
+  what I read when surveying the directory; without one, the cost of *finding* the
+  right entry grows with the length of every other entry. An item whose lede won't
+  fit in two sentences is usually two items. The sections below the lede are the
+  entry's maximum shape, not a checklist: an item with one obvious approach has no
+  "approaches considered", and a straw man written to fill the heading is worse
+  than the omission.
 - **Where:** the repo's worklog directory if it has one (`docs/worklog/`, or
-  wherever its `CLAUDE.md` says). The entry belongs in the repo whose code it
-  describes, so it travels with that code. **In a repo that has no worklog
-  convention, ask before creating one** — don't invent a top-level directory
-  mid-task. Until I answer, the session task list is the fallback.
+  wherever its `CLAUDE.md` says). **In a repo that has no worklog convention, ask
+  before creating one** — don't invent a top-level directory mid-task. Until I
+  answer, the session task list is the fallback.
 - **Check the existing entries before filing** so the same observation doesn't
   accumulate three times, and so you find the entry that already explains it.
-- **File it, don't pursue it.** Writing an entry is not permission to act on it,
-  and it doesn't license a detour from what I actually asked for.
-- **Never resolve an entry on your own.** Open items are mine to close. Leave them
-  open until I say otherwise.
-- Only file what's worth keeping. Passing thoughts, and things you already handled
-  inside the task, don't belong here.
+- **Never resolve an entry on your own.** Open items are mine to close. When a fix
+  lands, move the entry to the middle rung — `fixed, awaiting close` — rather than
+  leaving it plain `open`, so that "open" keeps meaning *someone still owes this
+  something*. You may set that rung; only I clear it.
 
-**When to escalate an item to the issue tracker instead:** the test is not size or
-effort, it's **whether someone outside this session needs to act on it**. Tracker
-if it needs scheduling, review, acceptance criteria, or I track it as a
-deliverable. Worklog for everything else — including things that will never be
-done, which the tracker has no good resting place for.
+A tracker item and a worklog entry are not alternatives — the worklog holds
+things that will never be done, which the tracker has no good resting place for.
 
 **Promote by link, not by copy.** When an entry graduates to a tracked task, the
 task points at the worklog path and the entry records the task id. The tracker owns
@@ -345,11 +350,6 @@ Record a mistake when any of these happen:
 - You discover a project-specific convention only after violating it
 
 Only record non-obvious, project-specific gotchas — not general programming knowledge.
-
-### Where to record it
-
-- **Project-specific** mistakes (tooling, test setup, local conventions): add to the project's CLAUDE.md under a `## Mistakes` section.
-- **Cross-project** mistakes (general workflow patterns, common tool pitfalls): add to your auto-memory `mistakes.md` file.
 
 ### Format
 
