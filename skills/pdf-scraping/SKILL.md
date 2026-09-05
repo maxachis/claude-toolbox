@@ -1,3 +1,8 @@
+---
+name: pdf-scraping
+description: Cost-efficient protocol for extracting data from PDFs — the extraction tier hierarchy (cheap text tools first, vision models last), fingerprinting and clustering format variants before writing a parser, library selection, and cost control. Load before scraping, parsing, or extracting structured data from PDF documents, especially a batch with unknown or mixed layouts.
+---
+
 # Cost-Efficient PDF Scraping Protocol
 
 ## Extraction Tier Hierarchy

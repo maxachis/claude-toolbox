@@ -1,3 +1,8 @@
+---
+name: playwright-efficient
+description: Token-efficient Playwright MCP usage — extract with evaluate instead of accessibility snapshots, confirm state with wait_for, reuse one snapshot across many actions, batch extractions, intercept network requests. Load before driving a browser with Playwright MCP: scraping pages, filling forms, multi-page data collection, or any automation where snapshots would flood the context.
+---
+
 # Token-Efficient Playwright MCP Usage
 
 ## Configuration

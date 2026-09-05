@@ -21,6 +21,7 @@ Reusable rule snippets for common conventions.
 - Writable paths for user data (cross-platform config/cache dirs)
 - Prompts folder layout and archive-on-success workflow
 - Database conventions (relational vs. JSONB)
+- Simulation/presentation split (headless-testable game/sim logic vs. renderer)
 
 ## What Are Rules?
 

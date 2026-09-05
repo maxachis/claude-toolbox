@@ -1,3 +1,8 @@
+---
+name: generate-then-separate
+description: Two-phase workflow for AI-assisted code creation: generate the working whole first, then separate it into its final module boundaries. Load when creating a substantial new feature or module from scratch and deciding how to structure it, or when generated code has grown into one file that needs splitting.
+---
+
 # Generate-Then-Separate Workflow
 
 A two-phase approach for AI-assisted code creation that balances fast generation with maintainable output.

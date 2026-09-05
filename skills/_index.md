@@ -9,9 +9,17 @@ at `~/.claude/skills/<name>/SKILL.md` and loads one when its `description` match
 work at hand, or when invoked explicitly as `/<name>`. The directory name is the slash
 name; supporting files beside `SKILL.md` are loaded only when referenced.
 
-| Skill | Purpose |
-|-------|---------|
-| [worklog-entries](worklog-entries/) | Composing, updating, and maintaining a worklog entry |
+| Skill | Loads when |
+|-------|------------|
+| [background-long-tasks](background-long-tasks/) | Launching a command that may run for minutes |
+| [generate-then-separate](generate-then-separate/) | Creating a substantial new module and deciding how to structure it |
+| [go-app-distribution](go-app-distribution/) | Setting up releases, auto-update, or installers for a Go app |
+| [pdf-scraping](pdf-scraping/) | Extracting structured data from PDFs |
+| [playwright-efficient](playwright-efficient/) | Driving a browser through Playwright MCP |
+| [worklog-entries](worklog-entries/) | Writing, updating, or correcting a worklog entry |
+
+`go-app-distribution` keeps its three recipes (releases, update check, Windows
+packaging) as reference files beside `SKILL.md`, loaded only when linked to.
 
 ## Reference Notes
 
@@ -24,7 +32,6 @@ Language-specific knowledge and best practices.
 - Python conventions
 - TypeScript patterns
 - Go idioms (pure-Go SQLite, cross-platform paths, error wrapping)
-- GDScript idioms (type-inference gotchas, class cache, headless detection)
 - Rust idioms
 - And more...
 
@@ -39,15 +46,7 @@ Framework-specific guidance and patterns.
 ### [Practices](practices/)
 Development practices and methodologies.
 - Test-driven development (TDD)
-- Generate-then-separate workflow for AI-assisted code creation
-- Code review guidelines
-- Git workflow standards
-- Cost-efficient PDF scraping protocol
-- Token-efficient Playwright MCP usage
-- Go: tag-triggered GitHub Releases workflow
-- Go: check-on-launch update banner pattern
-- Go: Windows desktop packaging (icon, versioninfo, WebView2, PS installer)
-- Long-running tasks: background and await, never sleep-poll
+- And more...
 
 ## Installation
 
