@@ -61,6 +61,10 @@ The delegation ladder:
   parallelism rather than as a strict cost rule.
 - Always review what the subagent returns — you own the result.
 
+## Refactoring Boundary
+
+The structural rules that follow — named arguments, no magic literals, one level of abstraction, no monolithic files — apply on sight in code you're **authoring**: extract as you write, no need to ask. In code that **already exists**, name what you see and propose the change; don't refactor it silently.
+
 ## Named Arguments at Call Sites
 
 When a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind its arguments by name at the call site by construction — via keyword-only parameters where the language supports them, or an options object / config struct / builder where it doesn't.
@@ -74,20 +78,18 @@ Strings are the more urgent half, because they fail quietly. A mistyped number u
 - **Name the *why*, not the *what*.** `RETRY_BACKOFF_CEILING_SECONDS = 30` earns its place; `THIRTY = 30` doesn't.
 - **Define it where the concept lives**, and import it — a constant duplicated across three modules is the same magic value with extra steps.
 - **Leave inline:** genuinely self-evident values (`0`, `1`, `-1` as bounds or increments, empty checks), one-off literals inside the module that owns the concept, human-facing log and error message text, and test fixtures where spelling the value out *is* what makes the assertion readable.
-- For code you're **authoring**, extract as you write — no need to ask. For **existing** code, follow the sibling rules below: surface the duplication and propose the extraction rather than silently refactoring.
 
 ## Avoid Monolithic Files
 
-When a file you're working in has grown large *and* is mixing unrelated concerns (e.g. IO, business logic, and presentation in one module), don't silently keep adding to it. Surface this to the user: name the distinct concerns you see and propose a concrete split. Do not refactor without approval — file splits ripple through imports and history. Size alone isn't the trigger — a long but cohesive file is fine; the signal is *multiple responsibilities* that have outgrown one module.
+When a file you're working in has grown large *and* is mixing unrelated concerns (e.g. IO, business logic, and presentation in one module), don't silently keep adding to it: name the distinct concerns you see and propose a concrete split. Size alone isn't the trigger — a long but cohesive file is fine; the signal is *multiple responsibilities* that have outgrown one module.
 
-This is the file-level sibling of **Keep Code at One Level of Abstraction** below.
+File splits ripple through imports and history, so this one stays a proposal even in a file you're authoring. It is the file-level sibling of **Keep Code at One Level of Abstraction** below.
 
 ## Keep Code at One Level of Abstraction
 
 Within a single function or block, keep statements at a consistent conceptual level. Don't interleave high-level orchestration (named domain steps) with low-level mechanics (loop bookkeeping, string/byte manipulation, manual index math, error-handling plumbing). When a block of low-level detail appears amid high-level steps, extract it behind a descriptively named function so the body reads as one coherent narrative.
 
-- For code you're **authoring**, extract as you write — no need to ask. Apply this conservatively: the trigger is a *block* of low-level detail that obscures the high-level flow, not the mere presence of any lower-level statement. A guard clause, an early return, or a single short loop in an otherwise high-level function is fine. Don't fragment logic into a swarm of one-line functions.
-- For **existing** code, treat it like *Avoid Monolithic Files* above: surface the mismatch and propose the extraction rather than silently refactoring.
+Apply this conservatively: the trigger is a *block* of low-level detail that obscures the high-level flow, not the mere presence of any lower-level statement. A guard clause, an early return, or a single short loop in an otherwise high-level function is fine. Don't fragment logic into a swarm of one-line functions.
 
 ## Complex Payloads Don't Belong in Shell Strings
 
