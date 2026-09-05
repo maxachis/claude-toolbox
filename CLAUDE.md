@@ -10,7 +10,7 @@ claude-toolbox/
 ├── lib/            # CLI command modules (cmd-*.sh, common.sh)
 ├── tests/          # bats-core tests
 ├── commands/       # Slash commands organized by domain (api, git, testing, etc.)
-├── skills/         # Background context: languages, frameworks, practices
+├── skills/         # Loadable skills (<name>/SKILL.md) + reference notes by category
 ├── agents/         # Custom subagent definitions (YAML frontmatter + markdown)
 ├── plugins/        # Installable bundles with plugin.json manifests
 ├── rules/          # CLAUDE.md templates (project-types/) and convention snippets (conventions/)
@@ -42,6 +42,8 @@ Brief description.
 **Agents** use YAML frontmatter with fields: `name`, `description`, `tools`, `model`, `permissionMode`, followed by a system prompt and `## When Invoked` section.
 
 **Plugins** have a `plugin.json` manifest (`name`, `version`, `description`, `commands`, `rules`, `dependencies`) alongside their bundled commands.
+
+**Skills** come in two kinds. A *loadable skill* is a directory with a `SKILL.md` whose YAML frontmatter (`name`, `description`) opens on line 1 — Claude Code discovers it at `~/.claude/skills/<name>/SKILL.md`, auto-loads it when the description matches the work, and exposes it as `/<name>`. *Reference notes* are plain `.md` files under the category directories (`languages/`, `frameworks/`, `practices/`); nothing loads them automatically. Put guidance needed only while doing a specific job in a loadable skill rather than in `configs/CLAUDE.md`, which is read every session.
 
 **Rules** are organized as project-type templates or standalone convention snippets with concise bullet-point guidelines.
 

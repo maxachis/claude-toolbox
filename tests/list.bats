@@ -29,10 +29,21 @@ setup() {
 }
 EOF
 
-  # Create mock skills
+  # Create mock skills: a reference note in a category dir...
   cat > "$TOOLBOX_ROOT/skills/languages/python.md" << 'EOF'
 # Python
 Python language conventions and best practices.
+EOF
+
+  # ...and a loadable skill (its own dir with a SKILL.md)
+  mkdir -p "$TOOLBOX_ROOT/skills/worklog-entries"
+  cat > "$TOOLBOX_ROOT/skills/worklog-entries/SKILL.md" << 'EOF'
+---
+name: worklog-entries
+description: How to compose and maintain a worklog entry.
+---
+
+# Writing a Worklog Entry
 EOF
 }
 
@@ -74,6 +85,19 @@ teardown() {
   run "$LOCAL_CLI" list skills
   [ "$status" -eq 0 ]
   [[ "$output" == *"python"* ]]
+}
+
+@test "list skills shows loadable skills with their description" {
+  run "$LOCAL_CLI" list skills
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"worklog-entries"* ]]
+  [[ "$output" == *"compose and maintain a worklog entry"* ]]
+}
+
+@test "list skills labels category dirs as reference notes" {
+  run "$LOCAL_CLI" list skills
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"languages/ (reference notes)"* ]]
 }
 
 @test "list with no args shows all component types" {

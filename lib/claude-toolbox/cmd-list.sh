@@ -157,17 +157,37 @@ list_skills() {
   fi
 
   local found=0
+
+  # Loadable skills: a directory holding a SKILL.md, discovered by Claude Code
+  # at ~/.claude/skills/<name>/SKILL.md.
   for sub_dir in "$dir"/*/; do
-    [[ -d "$sub_dir" ]] || continue
+    local manifest="${sub_dir}SKILL.md"
+    [[ -f "$manifest" ]] || continue
+    local name desc
+    name="$(basename "$sub_dir")"
+    desc=$(awk -F': ' '/^description:/ { sub(/^description: /, ""); print; exit }' "$manifest")
+    printf "  %-24s %s\n" "$name" "${desc:0:80}"
+    found=1
+  done
+
+  # Reference notes: plain .md files grouped in category directories. These are
+  # not loaded by Claude Code; they are a browsable library.
+  for sub_dir in "$dir"/*/; do
+    [[ -f "${sub_dir}SKILL.md" ]] && continue
     local category
     category="$(basename "$sub_dir")"
-    echo "  ${category}/"
+    local printed_header=0
 
     for file in "$sub_dir"/*.md; do
       [[ -f "$file" ]] || continue
       local name
       name="$(basename "$file" .md)"
       [[ "$name" == "README" || "$name" == "_index" ]] && continue
+
+      if [[ $printed_header -eq 0 ]]; then
+        echo "  ${category}/ (reference notes)"
+        printed_header=1
+      fi
 
       # Extract first heading as description
       local desc=""

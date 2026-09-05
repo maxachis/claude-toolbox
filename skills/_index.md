@@ -1,14 +1,30 @@
 # Skills Index
 
-Skills provide background knowledge and context that Claude can draw upon automatically.
+This directory holds two different things. Only the first is loaded by Claude Code.
 
-## Categories
+## Loadable Skills
+
+A directory containing a `SKILL.md` with YAML frontmatter. Claude Code discovers these
+at `~/.claude/skills/<name>/SKILL.md` and loads one when its `description` matches the
+work at hand, or when invoked explicitly as `/<name>`. The directory name is the slash
+name; supporting files beside `SKILL.md` are loaded only when referenced.
+
+| Skill | Purpose |
+|-------|---------|
+| [worklog-entries](worklog-entries/) | Composing, updating, and maintaining a worklog entry |
+
+## Reference Notes
+
+Everything under the category directories below is a browsable library of background
+notes, **not** loaded automatically. Read one when it is relevant, or promote it to a
+loadable skill by giving it its own directory and a `SKILL.md`.
 
 ### [Languages](languages/)
 Language-specific knowledge and best practices.
 - Python conventions
 - TypeScript patterns
 - Go idioms (pure-Go SQLite, cross-platform paths, error wrapping)
+- GDScript idioms (type-inference gotchas, class cache, headless detection)
 - Rust idioms
 - And more...
 
@@ -31,34 +47,34 @@ Development practices and methodologies.
 - Go: tag-triggered GitHub Releases workflow
 - Go: check-on-launch update banner pattern
 - Go: Windows desktop packaging (icon, versioninfo, WebView2, PS installer)
+- Long-running tasks: background and await, never sleep-poll
 
 ## Installation
 
-Skills are placed in `~/.claude/skills/`:
+`setup.sh` symlinks this whole directory to `~/.claude/skills/`, so loadable skills are
+discovered and reference notes come along for browsing. No per-file copying needed.
 
-```bash
-# Install all skills
-cp -r skills/* ~/.claude/skills/
+## Creating a Loadable Skill
 
-# Install a single skill
-cp skills/languages/python.md ~/.claude/skills/
-```
-
-## Creating Skills
-
-Skills are markdown files with domain knowledge:
+Make a directory named for the slash command, with a `SKILL.md` whose frontmatter opens
+on line 1:
 
 ```markdown
-# Python Best Practices
+---
+name: worklog-entries
+description: What this covers, and when to load it. Keywords here are what Claude
+  matches against the request, so name the trigger conditions explicitly.
+---
 
-## Code Style
-- Follow PEP 8
-- Use type hints
-- Prefer f-strings
+# Title
 
-## Project Structure
-- Use src/ layout
-- Separate tests from source
+Instructions...
 ```
 
-Skills are automatically loaded as context, unlike commands which must be explicitly invoked.
+`name` and `description` are the only fields needed. Useful optional ones:
+`allowed-tools`, `model`, `disable-model-invocation` (explicit `/name` only), and
+`paths` (limit auto-invocation to matching files).
+
+Keep the body focused on what changes behavior. Guidance that belongs in every session
+goes in `configs/CLAUDE.md`; guidance needed only while doing a specific job belongs
+here, where it costs nothing until it fires.

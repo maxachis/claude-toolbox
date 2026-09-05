@@ -218,99 +218,28 @@ Prose gets compacted away or buried as the conversation drifts, so an item that
 outlives the session goes to disk in the repo, where it travels with the code it
 describes.
 
-The entry is one file, and it is **both** the open-item and the record of thinking.
-Do not treat those as separate artifacts:
+**Before writing or updating an entry, load the `worklog-entries` skill.** It carries
+the composition craft: what an entry contains, how to rewrite the stale claims at the
+top when you append new facts at the bottom, how to mark facts and decisions I supplied,
+and when to rename, split, or promote an entry to a tracker task. What stays here is
+only what decides whether and when you file at all:
 
-- **What was observed**, in behavioral terms — what the system does that it
-  shouldn't, or what I have to decide.
-- **The evidence**, concretely: the commands run and their relevant output, the
-  `path/to/file.py:42` references. Enough that the next reader does not re-derive it.
-- **Why it matters**, or why it might not — including "this looks alarming and
-  isn't," which is a valuable entry.
-- **Approaches considered and rejected, with the reason** — and **who** rejected
-  it. "Ruled out polling; too slow" reads the same whether I decided it or you did,
-  but the two mean opposite things to the next session: my call is settled, yours is
-  a hypothesis a later agent with better information should feel free to overturn.
-  This never survives in a diff, and it is what makes an old entry useful: it is how
-  a wrong approach gets diagnosed after the fact, and how trends across many entries
-  become visible.
-- **The resolution**, recorded when it lands — the PR, or the decision not to act.
-
-**Updating an entry is two motions, not one.** New facts append at the bottom; the
-claims at the top get rewritten *in the same pass*. Appending alone is the natural
-motion and it silently rots the entry: an update arrives as "here is what happened
-on the 12th", lands at the bottom, and the paragraph three screens up goes on
-asserting the opposite in the present tense with nothing marking it stale. So when
-the bottom of an entry contradicts the top, **the top is what's wrong** — go fix
-that sentence. Do not add a third paragraph reconciling the first two. This is
-**Corrections rewrite in place** from the memory section below, and it binds here
-for the same reason: a reader who stops halfway down must not be misinformed.
-
-Record the *shape* of a correction, not just the corrected fact. A line naming how
-the mistake was possible — "the root of both errors was reading a code default as
-though it were the deployed value" — is the most useful thing an entry can carry,
-because it generalizes and the fact doesn't.
-
-**An entry is one item.** Two things follow, and both are maintenance you have to
-do deliberately because neither happens on its own. When investigation moves and
-the title no longer describes what the entry is about, rename the file to match and
-fix the inbound links — a stale slug is how the next reader fails to find the entry
-that already explains their problem. And when two items are sharing a file because
-they share a *resource* rather than a cause, split them; otherwise the resolved
-half can never be archived without burying the open half with it.
-
-**Mark what I told you, not what you found.** Your own observations arrive with
-commands and file references attached — inherently re-checkable, so their
-authorship is implied and uninteresting. The default is "agent-derived and
-re-derivable," and restating that on every entry is noise. Label the exception:
-
-- **Constraints and environment facts I supplied** that can't be verified from the
-  repo — a deadline, a hand-edited firewall rule, a platform we're not supporting.
-  Give these a `> Stated by Max; not verifiable from the repo` line where they
-  appear. It tells the next reader not to go hunting for confirmation, and not to
-  weigh its own inference as equally authoritative.
-- **Decisions I made**, per the bullet above — name me, rather than writing them in
-  the same first-person voice as your own reasoning.
-
-Attribution is not permanence: something I stated about mutable external state is
-still a lead to re-verify, not a fact. And never add an `author:` field or a
-human-vs-agent tag to every entry — a label that's the same on 95% of entries
-carries no signal and makes provenance look handled while the two cases above go
-unmarked anyway.
-
-Rules for filing:
-
-- **Open with a two-line lede** — the observation in one sentence, where it stands
-  in one sentence — then let the body run as long as the item deserves. The lede is
-  what I read when surveying the directory; without one, the cost of *finding* the
-  right entry grows with the length of every other entry. An item whose lede won't
-  fit in two sentences is usually two items. The sections below the lede are the
-  entry's maximum shape, not a checklist: an item with one obvious approach has no
-  "approaches considered", and a straw man written to fill the heading is worse
-  than the omission.
 - **Where:** the repo's worklog directory if it has one (`docs/worklog/`, or
   wherever its `CLAUDE.md` says). **In a repo that has no worklog convention, ask
   before creating one** — don't invent a top-level directory mid-task. Until I
   answer, the session task list is the fallback.
 - **Check the existing entries before filing** so the same observation doesn't
   accumulate three times, and so you find the entry that already explains it.
+- **Open with a two-line lede** — the observation in one sentence, where it stands
+  in one sentence — then let the body run as long as the item deserves. The lede is
+  what I read when surveying the directory; without one, the cost of *finding* the
+  right entry grows with the length of every other entry.
+- **An entry is one item.** An item whose lede won't fit in two sentences is
+  usually two items.
 - **Never resolve an entry on your own.** Open items are mine to close. When a fix
   lands, move the entry to the middle rung — `fixed, awaiting close` — rather than
   leaving it plain `open`, so that "open" keeps meaning *someone still owes this
   something*. You may set that rung; only I clear it.
-
-A tracker item and a worklog entry are not alternatives — the worklog holds
-things that will never be done, which the tracker has no good resting place for.
-
-**Promote by link, not by copy.** When an entry graduates to a tracked task, the
-task points at the worklog path and the entry records the task id. The tracker owns
-status and scheduling; the repo owns evidence and reasoning. Copying the reasoning
-into both creates two systems of record, and the interesting half then lives in
-whichever one was updated last.
-
-A worklog entry is a durable record, not memory — see **Memory: Cache Rediscovery,
-Not State** below. The same rule applies within an entry: record the check and the
-evidence, and date any claim about mutable state rather than asserting it flatly.
 
 ## Test-Driven Development
 
