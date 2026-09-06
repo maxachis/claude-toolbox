@@ -115,11 +115,9 @@ When a change alters what renders, you MUST capture the affected view and look a
 
 **When you can't capture it, say so.** A view may need a running server, a route behind auth, a particular data state, or a browser tool that isn't available. Do not spend meaningful effort fighting the harness to get an image. Stop, state plainly that you could not see the change render, and name what you'd want me to check by eye instead. Silently skipping the check is the failure mode to avoid — an unverified change reported as verified is worse than an honest gap.
 
-Use the project's own way of launching the app where one exists (the `/run` skill, or a documented dev-server command) rather than improvising a harness. Then delete the image per the rule below.
+Use the project's own way of launching the app where one exists (the `/run` skill, or a documented dev-server command) rather than improvising a harness.
 
-## Debugging Screenshots
-
-After reading a debugging screenshot (e.g. one taken via Playwright MCP, or captured to verify a visual change), you MUST delete the file immediately. Do not leave screenshot files on disk after they have served their purpose.
+**Delete the image once you've read it.** This applies to any debugging screenshot, however it was captured (Playwright MCP included) — don't leave screenshot files on disk after they've served their purpose.
 
 ## Work in Your Own Worktree
 
