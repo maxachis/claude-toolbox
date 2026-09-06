@@ -3,6 +3,15 @@
 <!-- This file is linked to ~/.claude/CLAUDE.md by setup.sh -->
 <!-- These instructions apply to all Claude Code sessions. -->
 
+**MUST** and **SHOULD**, in capitals, are priority markers. `MUST` marks the
+few rules whose violation is expensive or hard to undo — it is deliberately
+rare, and stays rare, because its only job is to survive a long context window.
+`SHOULD` marks a genuine judgment call, and appears only where the contrast
+against a nearby `MUST` is what carries the meaning. Every other rule here is
+an ordinary imperative and is fully in force: an unmarked rule is not optional,
+and the scope and exception clauses attached to it say when it applies far more
+precisely than a label could.
+
 When committing to git, default to ssh rather than HTTPS.
 
 ## Time Zone
@@ -27,8 +36,8 @@ A useful test before you send: if I have no memory of any name in this paragraph
 ## Delegate Implementation to Cheaper Models When Running on a Premium Tier
 
 When you are running as a premium-tier model — Opus, Fable, or any future model
-priced above Sonnet — act as the planner/reviewer and delegate mechanical
-implementation to a cheaper subagent (the `Agent` tool with an explicit
+priced above Sonnet — you SHOULD act as the planner/reviewer and delegate
+mechanical implementation to a cheaper subagent (the `Agent` tool with an explicit
 `model:`). Cost rises steeply at the top of the lineup — Fable is roughly twice
 Opus, Opus a few times Sonnet, Sonnet a few times Haiku — so a Fable session
 typing boilerplate is the most expensive way to produce it in the whole lineup.
@@ -60,7 +69,8 @@ The delegation ladder:
   still being discovered while coding). The Opus–Sonnet gap is narrow, so from
   Opus lean on delegation mainly for context hygiene and parallelism rather
   than as a strict cost rule.
-- Always review what the subagent returns — you own the result.
+- You MUST review what the subagent returns before it lands — you own the
+  result. Delegating is a judgment call; reviewing what comes back is not.
 
 ## Refactoring Boundary
 
@@ -72,7 +82,7 @@ When a function takes more than ~two parameters, any boolean flag, or two adjace
 
 ## No Magic Strings or Numbers
 
-A literal that carries domain meaning — a status value, a key or column name, a route, an env var, an error code, a feature-flag name, a threshold, a duration, a limit — MUST exist in named constant defined once, with every use referencing that name.
+A literal that carries domain meaning — a status value, a key or column name, a route, an env var, an error code, a feature-flag name, a threshold, a duration, a limit — belongs in a named constant defined once, with every use referencing that name.
 
 Strings are the more urgent half, because they fail quietly. A mistyped number usually blows up; a mistyped `"pending"` just silently never matches, and the bug surfaces as absent behavior somewhere far away. So prefer the strongest construct the language offers — an enum, a literal union type, a frozen constants module — over a bare string repeated at call sites, and let the compiler or type checker catch the typo instead of a user.
 
@@ -133,10 +143,10 @@ another session may be active in it, and if so work in your own worktree** (the
 `git branch --show-current` returns a branch you didn't create, unfamiliar recent
 commits or reflog entries, or files changing that you didn't touch.
 
-- **Always verify your branch immediately before committing** — `git branch --show-current`
+- **You MUST verify your branch immediately before committing** — `git branch --show-current`
   — rather than trusting the branch you checked out earlier in the session. This is
   cheap and catches the problem regardless of worktrees.
-- **Never** `reset --hard`, force-checkout over, or delete a branch you did not create.
+- **You MUST NOT** `reset --hard`, force-checkout over, or delete a branch you did not create.
   If you find someone else's work in your way, say so and re-base your own work off it.
 - Worktrees share the object store and branch refs but **not** untracked files, so
   `node_modules`/`.venv`/`.env` need reinstalling or symlinking per worktree.
@@ -208,7 +218,7 @@ the other. Three rules bind across all of them:
   reconstructs the reasoning instead of recording it.
 - **File it, don't pursue it.** Recording an item is not permission to act on it,
   and it doesn't license a detour from what I actually asked for.
-- **Don't file it twice.** The report is the *surface* — what I see now, then
+- **You MUST NOT file it twice.** The report is the *surface* — what I see now, then
   scroll past. The worklog and the tracker are the *durable record*. An item that
   earns a durable home gets a **pointer** in the report, not a second copy of the
   prose.
@@ -237,7 +247,7 @@ only what decides whether and when you file at all:
   right entry grows with the length of every other entry.
 - **An entry is one item.** An item whose lede won't fit in two sentences is
   usually two items.
-- **Never resolve an entry on your own.** Open items are mine to close. When a fix
+- **You MUST NOT resolve an entry on your own.** Open items are mine to close. When a fix
   lands, move the entry to the middle rung — `fixed, awaiting close` — rather than
   leaving it plain `open`, so that "open" keeps meaning *someone still owes this
   something*. You may set that rung; only I clear it.
