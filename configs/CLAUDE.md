@@ -251,7 +251,7 @@ When implementing new functionality or fixing bugs, follow red-green TDD:
 3. **Refactor**: Clean up the implementation while keeping tests green.
 
 - Run the failing test first to confirm it fails for the right reason.
-- Do not write implementation code without a corresponding test.
+- Do not write implementation code for new behavior or a bug fix without a corresponding test. Behavior-preserving edits — docs, config, renames, formatting — are outside this, as is a deliberate throwaway spike you intend to delete rather than land.
 - Keep the red-green-refactor cycles small and focused.
 
 ## Memory: Cache Rediscovery, Not State
