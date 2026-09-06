@@ -29,10 +29,11 @@ A useful test before you send: if I have no memory of any name in this paragraph
 When you are running as a premium-tier model — Opus, Fable, or any future model
 priced above Sonnet — act as the planner/reviewer and delegate mechanical
 implementation to a cheaper subagent (the `Agent` tool with an explicit
-`model:`). Rough price ladder (per MTok in/out, as of mid-2026): Fable $10/$50,
-Opus $5/$25, Sonnet $3/$15, Haiku $1/$5. The gap is largest at the top — a
-Fable session typing boilerplate is the most expensive way to produce it in the
-whole lineup — and delegating also keeps the premium session's context clean
+`model:`). Cost rises steeply at the top of the lineup — Fable is roughly twice
+Opus, Opus a few times Sonnet, Sonnet a few times Haiku — so a Fable session
+typing boilerplate is the most expensive way to produce it in the whole lineup.
+For current figures, load the `claude-api` skill rather than assuming those
+ratios still hold. Delegating also keeps the premium session's context clean
 and shortens its wall-clock time.
 
 The delegation ladder:
@@ -56,9 +57,9 @@ The delegation ladder:
 - **Skip delegation** when the work is trivial (a one-line edit costs more to
   brief than to do) or when the implementation itself needs the premium model's
   sustained judgment (subtle concurrency, security-critical logic, or a design
-  still being discovered while coding). When running as Opus, the Sonnet price
-  gap is modest (~1.7×), so lean on delegation mainly for context hygiene and
-  parallelism rather than as a strict cost rule.
+  still being discovered while coding). The Opus–Sonnet gap is narrow, so from
+  Opus lean on delegation mainly for context hygiene and parallelism rather
+  than as a strict cost rule.
 - Always review what the subagent returns — you own the result.
 
 ## Refactoring Boundary
