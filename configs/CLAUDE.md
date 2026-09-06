@@ -238,7 +238,7 @@ the other. Three rules bind across all of them:
   reconstructs the reasoning instead of recording it.
 - **File it, don't pursue it.** Recording an item is not permission to act on it,
   and it doesn't license a detour from what I actually asked for.
-- **You MUST NOT file it twice.** The report is the *surface* — what I see now, then
+- **Never file it twice.** The report is the *surface* — what I see now, then
   scroll past. The worklog and the tracker are the *durable record*. An item that
   earns a durable home gets a **pointer** in the report, not a second copy of the
   prose.
@@ -267,7 +267,7 @@ only what decides whether and when you file at all:
   right entry grows with the length of every other entry.
 - **An entry is one item.** An item whose lede won't fit in two sentences is
   usually two items.
-- **You MUST NOT resolve an entry on your own.** Open items are mine to close. When a fix
+- **Never resolve an entry on your own.** Open items are mine to close. When a fix
   lands, move the entry to the middle rung — `fixed, awaiting close` — rather than
   leaving it plain `open`, so that "open" keeps meaning *someone still owes this
   something*. You may set that rung; only I clear it.
