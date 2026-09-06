@@ -14,12 +14,22 @@ precisely than a label could.
 
 When committing to git, default to ssh rather than HTTPS.
 
-## Time Zone
+## Show Me Times in Eastern, Leave Data in UTC
 
-When presenting times in conversation, use US Eastern Time
-(America/New_York, accounting for EST/EDT) rather than UTC. This applies only
-to times shown in your responses — do not alter timestamps in code, commits,
-logs, or data, which should stay in their native zone (usually UTC).
+When you tell me a time, convert it to US Eastern (America/New_York, EST or EDT
+as the date requires). I don't do the arithmetic when I read a response — a UTC
+timestamp gets read as local and lands me four or five hours off, which is the
+difference between "that job just ran" and "that job ran this morning."
+
+This covers times you are *narrating*: how long ago something happened, when a
+run is scheduled, what a log line's clock means in my terms. It stops at times
+that are *data* — do not rewrite timestamps in code, commit metadata, log
+output, config, or query results, which stay in their native zone (usually
+UTC). Converting those corrupts the record for whoever reads it next.
+
+The dividing line: if the string would still have to be correct after someone
+pasted it into a file, it's data. Quote it as it stands, and put the Eastern
+reading beside it if that helps.
 
 ## Lead with Behavior, Not Identifiers
 
@@ -76,9 +86,15 @@ The delegation ladder:
 
 The structural rules that follow — named arguments, no magic literals, one level of abstraction, no monolithic files — apply on sight in code you're **authoring**: extract as you write, no need to ask. In code that **already exists**, name what you see and propose the change; don't refactor it silently.
 
-## Named Arguments at Call Sites
+## Bind Arguments by Name at Call Sites
 
-When a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind its arguments by name at the call site by construction — via keyword-only parameters where the language supports them, or an options object / config struct / builder where it doesn't.
+Positional arguments fail quietly. Swap two parameters of the same type and nothing errors — the call just runs with the values transposed, and the damage surfaces somewhere else entirely. A bare `true` is worse still: the call site tells a reader nothing about what it switched on, so understanding one line means going to find the signature.
+
+So when a function takes more than ~two parameters, any boolean flag, or two adjacent same-typed parameters, bind the arguments by name **by construction** — keyword-only parameters where the language has them, an options object, config struct, or builder where it doesn't. A `/* dryRun= */ true` comment doesn't count: nothing checks it, so it goes stale the first time the signature moves.
+
+Two parameters of different types in an obvious order are fine as they are. The target is arguments a reader can't tell apart, not parameter count for its own sake.
+
+A quick check: read the call site alone, without the signature in front of you, and say what each argument means. If you can't, name them.
 
 ## No Magic Strings or Numbers
 
@@ -155,11 +171,15 @@ commits or reflog entries, or files changing that you didn't touch.
 
 ## Commit Messages
 
-Write commit subject lines in [Conventional Commits](https://www.conventionalcommits.org/) format: `type(optional-scope): description`.
+A subject line is what I read in `git log --oneline` months later, with the diff long gone from memory — so it has to carry the change on its own. "fix stuff" and "update handler.py" both fail that: one says nothing, the other says where without saying what.
 
-- Common types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`, `ci`, `perf`.
-- Keep the subject in the imperative mood and under ~72 characters.
-- Use the body to explain *what* and *why* when the change isn't self-evident from the subject.
+Write subjects in [Conventional Commits](https://www.conventionalcommits.org/) form — `type(optional-scope): description`, imperative mood, under ~72 characters. Common types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`, `ci`, `perf`.
+
+- **Say what changed about the behavior**, per *Lead with Behavior, Not Identifiers* above: `fix(auth): keep sessions alive across a restart`, not `fix(auth): update SessionStore`.
+- **Use the body for the why** when the subject can't carry it — what the old behavior was, what forced the change, what you decided against. Skip it when the subject is self-evident.
+- **Don't narrate the diff.** I can read the diff; the reason is the part I can't recover from it.
+
+The test: a year from now, does this line alone tell me why the commit exists?
 
 ## Hold the Primary Goal, and Report Against It
 
