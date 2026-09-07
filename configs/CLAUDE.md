@@ -7,10 +7,9 @@
 few rules whose violation is expensive or hard to undo — it is deliberately
 rare, and stays rare, because its only job is to survive a long context window.
 `SHOULD` marks a genuine judgment call, and appears only where the contrast
-against a nearby `MUST` is what carries the meaning. Every other rule here is
-an ordinary imperative and is fully in force: an unmarked rule is not optional,
-and the scope and exception clauses attached to it say when it applies far more
-precisely than a label could.
+against a nearby `MUST` is what carries the meaning. Every other rule here is an
+ordinary imperative and is fully in force; the scope and exception clauses
+attached to it say when it applies.
 
 When committing to git, default to ssh rather than HTTPS.
 
@@ -48,12 +47,10 @@ A useful test before you send: if I have no memory of any name in this paragraph
 When you are running as a premium-tier model — Opus, Fable, or any future model
 priced above Sonnet — you SHOULD act as the planner/reviewer and delegate
 mechanical implementation to a cheaper subagent (the `Agent` tool with an explicit
-`model:`). Cost rises steeply at the top of the lineup — Fable is roughly twice
-Opus, Opus a few times Sonnet, Sonnet a few times Haiku — so a Fable session
-typing boilerplate is the most expensive way to produce it in the whole lineup.
-For current figures, load the `claude-api` skill rather than assuming those
-ratios still hold. Delegating also keeps the premium session's context clean
-and shortens its wall-clock time.
+`model:`). Cost rises steeply at the top of the lineup, so a premium session
+typing boilerplate is the most expensive way to produce it; load the
+`claude-api` skill for the current figures. Delegating also keeps the premium
+session's context clean and shortens its wall-clock time.
 
 The delegation ladder:
 
@@ -70,9 +67,8 @@ The delegation ladder:
   tricky-but-bounded algorithm — work that would strain Sonnet but doesn't need
   Fable-level reasoning.
 - Use a fresh `general-purpose` (or task-specific) agent with an explicit
-  `model:`. A `fork` cannot downgrade the model (it always inherits the
-  parent), so it saves no tokens — and a fork of a Fable session bills at Fable
-  rates.
+  `model:`. A `fork` always inherits the parent model, so it bills at the
+  premium rate and saves nothing.
 - **Skip delegation** when the work is trivial (a one-line edit costs more to
   brief than to do) or when the implementation itself needs the premium model's
   sustained judgment (subtle concurrency, security-critical logic, or a design
@@ -135,11 +131,10 @@ This applies to writing files too: prefer the Write tool over `cat > f <<EOF`.
 ## Stop What You Started
 
 A background shell that never exits produces no completion notification, so
-nothing ever brings you back to clean it up. A dev server, a `tail -f`, a
+nothing ever brings you back to clean it up: a dev server, a `tail -f`, a
 watch-mode build, or a wait-loop whose condition never comes true just sits
-there for the rest of the session and past it — and the leak is invisible from
-inside the session, because the absence of a notification looks identical to
-work still in progress.
+there for the rest of the session and past it. The leak is also invisible from
+inside — the absence of a notification looks identical to work in progress.
 
 - **Give every background command an end condition** — a finite timeout, a
   bounded loop, or a command that exits on its own. Size the bound to what the
@@ -155,11 +150,9 @@ work still in progress.
 
 ## Look at Visual Changes Before Calling Them Done
 
-When a change alters what renders, you MUST capture the affected view and look at it before reporting the work complete. Passing tests and a clean diff say nothing about overlapping text, a collapsed container, or an element that silently failed to appear — those are only visible in a picture.
+When a change alters what renders, you MUST capture the affected view and look at it before reporting the work complete. Passing tests and a clean diff say nothing about overlap, clipping, misalignment, a collapsed container, a missing or unstyled element, or text spilling its container — those are only visible in a picture, and whatever is plainly wrong there is what you report.
 
 **What triggers this** is a change to rendered output: layout, spacing, sizing, color, typography, new or restructured UI, responsive behavior, or anything whose visual result you are predicting rather than observing. Editing a file that happens to contain UI is not the trigger — a rename, an extracted subcomponent, a logic fix that leaves the render byte-identical needs no screenshot.
-
-**Screen for breakage**. Report what is plainly wrong — overlap, clipping, misalignment, a missing or unstyled element, text spilling its container. 
 
 **When you can't capture it, say so.** A view may need a running server, a route behind auth, a particular data state, or a browser tool that isn't available. Do not spend meaningful effort fighting the harness to get an image. Stop, state plainly that you could not see the change render, and name what you'd want me to check by eye instead. Silently skipping the check is the failure mode to avoid — an unverified change reported as verified is worse than an honest gap.
 
@@ -192,7 +185,7 @@ commits or reflog entries, or files changing that you didn't touch.
 
 ## Commit Messages
 
-A subject line is what I read in `git log --oneline` months later, with the diff long gone from memory — so it has to carry the change on its own. "fix stuff" and "update handler.py" both fail that: one says nothing, the other says where without saying what.
+A subject line is what I read in `git log --oneline` months later, with the diff long gone from memory. "fix stuff" and "update handler.py" both fail that: one says nothing, the other says where without saying what.
 
 Write subjects in [Conventional Commits](https://www.conventionalcommits.org/) form — `type(optional-scope): description`, imperative mood, under ~72 characters. Common types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`, `ci`, `perf`.
 
@@ -318,9 +311,9 @@ When implementing new functionality or fixing bugs, follow red-green TDD:
 2. **Green**: Write the minimum implementation code to make the test pass.
 3. **Refactor**: Clean up the implementation while keeping tests green.
 
-- Run the failing test first to confirm it fails for the right reason.
-- Do not write implementation code for new behavior or a bug fix without a corresponding test. Behavior-preserving edits — docs, config, renames, formatting — are outside this, as is a deliberate throwaway spike you intend to delete rather than land.
-- Keep the red-green-refactor cycles small and focused.
+- **Run the failing test before writing implementation**, to confirm it fails for the reason you think it does.
+- **No implementation for new behavior or a bug fix without a corresponding test.** Behavior-preserving edits — docs, config, renames, formatting — are outside this, as is a deliberate throwaway spike you intend to delete rather than land.
+- **Keep the cycles small**, one behavior at a time.
 
 ## Memory: Cache Rediscovery, Not State
 
@@ -338,20 +331,7 @@ Before writing a memory, ask: **can this become false without a commit?** If yes
 
 ## Learning from Mistakes
 
-### When to record a mistake
-
-Record a mistake when any of these happen:
-
-- You encounter an error that a future Claude agent could reasonably repeat
-- The user corrects you (explicitly or by providing the right approach after you did the wrong one)
-- A test, linter, or CI check fails because of something you did wrong
-- You discover a project-specific convention only after violating it
-
-Only record non-obvious, project-specific gotchas — not general programming knowledge.
-
-### Format
-
-Use this structured format for each entry:
+*Where Findings Go* decides which file a gotcha lands in. Record one when I correct you, when a check fails because of something you did wrong, or when you find a convention only by violating it — and only when it is non-obvious and specific to this project, never general programming knowledge. The format:
 
 ```
 - **[category]**: concise description. `wrong` → `right`.
@@ -364,10 +344,4 @@ Examples:
 - **[env]**: Tests require dev database — run `docker compose up db` first.
 - **[convention]**: Generated files in `configs/devcontainer/*.jsonc` must not be edited directly — edit `src/` and run `generate.sh`.
 
-### Maintenance
-
-When editing a Mistakes section, also review existing entries:
-
-- Remove any that are no longer accurate (e.g., tooling or config changed)
-- Merge duplicates
-- Keep the section under 15 entries — if full, drop the least impactful
+When you add an entry, review the existing ones in the same pass: drop any no longer accurate (the tooling or config moved), merge duplicates, and keep the section under 15 entries by dropping the least impactful.
