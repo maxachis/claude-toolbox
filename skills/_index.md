@@ -11,7 +11,7 @@ name; supporting files beside `SKILL.md` are loaded only when referenced.
 
 | Skill | Loads when |
 |-------|------------|
-| [background-long-tasks](background-long-tasks/) | Launching a command that may run for minutes |
+| [background-long-tasks](background-long-tasks/) | Launching a command that may run for minutes, and stopping it afterward |
 | [claude-md-rules](claude-md-rules/) | Adding, editing, or demoting a rule in a CLAUDE.md |
 | [generate-then-separate](generate-then-separate/) | Creating a substantial new module and deciding how to structure it |
 | [go-app-distribution](go-app-distribution/) | Setting up releases, auto-update, or installers for a Go app |

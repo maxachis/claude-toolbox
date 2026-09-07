@@ -132,6 +132,27 @@ Use an unquoted heredoc (`<<SQL`) only when you *want* shell interpolation into 
 
 This applies to writing files too: prefer the Write tool over `cat > f <<EOF`.
 
+## Stop What You Started
+
+A background shell that never exits produces no completion notification, so
+nothing ever brings you back to clean it up. A dev server, a `tail -f`, a
+watch-mode build, or a wait-loop whose condition never comes true just sits
+there for the rest of the session and past it — and the leak is invisible from
+inside the session, because the absence of a notification looks identical to
+work still in progress.
+
+- **Give every background command an end condition** — a finite timeout, a
+  bounded loop, or a command that exits on its own. Size the bound to what the
+  work actually takes, on the principle that if it runs past that, it hung or
+  you forgot about it.
+- **Reap it as soon as its purpose is served.** When the thing you started a
+  server or watcher *for* is done — screenshot taken, check passed — stop it in
+  the same turn, rather than saving it for the end of the session.
+- **Sweep before handing back control.** After a batch of work that started
+  anything in the background, check what's still running and stop what you no
+  longer need. Name anything you deliberately left running, and why.
+- **Leave alone what you didn't start** — my own servers, another session's jobs.
+
 ## Look at Visual Changes Before Calling Them Done
 
 When a change alters what renders, you MUST capture the affected view and look at it before reporting the work complete. Passing tests and a clean diff say nothing about overlapping text, a collapsed container, or an element that silently failed to appear — those are only visible in a picture.
