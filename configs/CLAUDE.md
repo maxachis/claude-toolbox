@@ -192,8 +192,8 @@ observation is to record it and keep going. Ask me before changing course; don't
 infer a new goal from what you found.
 
 When you return control after an **extended batch of autonomous work** — several
-tool calls, or any change to files — lead your response with two headers, then
-whatever prose the situation needs:
+tool calls, or any change to files — open your response with two headers, then
+whatever prose the situation needs, and close it with a third:
 
 **Primary Goal** — restate the goal in one line, then say concretely what moved
 between my last instruction and now, and what remains. A few sentences at most.
@@ -208,8 +208,25 @@ observations is a normal, expected outcome**; when there are none, write "None" 
 move on. Do not pad this section to look thorough — a manufactured observation is
 worse than an empty list, because it costs me a read to discard.
 
-After the two headers, use ordinary prose for anything longer: detail, evidence,
-open questions, obstacles per *Where Findings Go* below.
+After those two headers, use ordinary prose for anything longer: detail, evidence,
+obstacles per *Where Findings Go* below, and the assumptions you settled on your
+own.
+
+**Next Decisions** — last, closest to where I type the answer: a numbered list of
+questions only I can settle, each phrased as an actual question and each carrying
+your recommendation. A fork with no recommendation attached hands me the analysis
+instead of the decision.
+
+- **The bar is that the answers lead to materially different work.** A call you
+  can make yourself, or already made under an assumption you stated, is not a
+  decision I owe you — it stays in the prose as an assumption, and I'll overturn
+  it if I disagree. Escalating routine calls under this header turns the report
+  into a permission queue, which costs more than the occasional wrong assumption.
+- **Point at the durable record, don't restate it.** *Where Findings Go* sends a
+  decision owed to a worklog entry; the question belongs here, the context behind
+  it belongs there, and this list cites it by path.
+- **"None" is the common case.** Same as side observations, and harder: a
+  manufactured question doesn't just cost a read, it costs a reply.
 
 Scope this to real work batches. A question, a short answer, a one-line edit, or a
 conversational turn gets a normal reply — a rule applied ceremonially to trivial
