@@ -195,7 +195,7 @@ Write subjects in [Conventional Commits](https://www.conventionalcommits.org/) f
 
 The test: a year from now, does this line alone tell me why the commit exists?
 
-## Hold the Primary Goal, and Report Against It
+## Hold the Primary Goal
 
 A session has one **primary goal**: the objective set by my most recent goal-setting
 instruction. It stays in force until I replace it. Nothing you encounter while
@@ -205,9 +205,19 @@ obviously help. Those are *side observations*, and the response to a side
 observation is to record it and keep going. Ask me before changing course; don't
 infer a new goal from what you found.
 
+- **File at discovery time**, not when you get around to acting on it — that is
+  when the context is free. You have just run the command and seen why it looked
+  wrong. An hour later, or after a compaction, the same entry costs a
+  re-investigation to write, and the second version is worse because it
+  reconstructs the reasoning instead of recording it.
+- **File it, don't pursue it.** Recording an item is not permission to act on it,
+  and it doesn't license a detour from what I actually asked for.
+
+## Report Against the Primary Goal
+
 When you return control after an **extended batch of autonomous work** — several
 tool calls, or any change to files — open your response with two headers, then
-whatever prose the situation needs, and close it with a third:
+whatever prose the situation needs, and close it with a third.
 
 **Primary Goal** — restate the goal in one line, then say concretely what moved
 between my last instruction and now, and what remains. A few sentences at most.
@@ -222,9 +232,24 @@ observations is a normal, expected outcome**; when there are none, write "None" 
 move on. Do not pad this section to look thorough — a manufactured observation is
 worse than an empty list, because it costs me a read to discard.
 
+Most side observations don't belong under that header at all. Each one has exactly
+one home, picked by what the item *needs*, not by how interesting it was:
+
+| The item is... | It goes... |
+|---|---|
+| something **someone outside this session** must act on — it needs scheduling, review, or acceptance criteria, or I track it as a deliverable | the issue tracker, linked to its worklog entry |
+| an open question, a decision owed, a defect you are deliberately not fixing — anything I'd otherwise have to re-derive | a worklog entry, cited by path in your report |
+| a recurring gotcha — a convention you only found by violating it, an undocumented setup step | the project's `CLAUDE.md` under `## Mistakes` — or your auto-memory `mistakes.md` when it isn't project-specific. Format per *Learning from Mistakes* below |
+| friction that was **substantial and preventable** — a straightforward change tripping a footgun, real effort spent hunting for something that should have been easy, a tool behaving surprisingly | one line in your final remarks: what the obstacle was, plus one concrete recommendation to avoid it next time |
+| already handled inside this change, or a passing thought | nowhere durable. A comment at the line someone would next edit, or the PR body, and then let it go |
+
+**Never file it twice.** This report is the *surface* — what I see now, then scroll
+past. The worklog and the tracker are the *durable record*. An item that earns a
+durable home gets a **pointer** here, not a second copy of the prose; an item that
+fits two rows goes to the more durable home and is pointed at from the other.
+
 After those two headers, use ordinary prose for anything longer: detail, evidence,
-obstacles per *Where Findings Go* below, and the assumptions you settled on your
-own.
+obstacles, and the assumptions you settled on your own.
 
 **Next Decisions** — last, closest to where I type the answer: a numbered list of
 questions only I can settle, each phrased as an actual question and each carrying
@@ -236,43 +261,15 @@ instead of the decision.
   decision I owe you — it stays in the prose as an assumption, and I'll overturn
   it if I disagree. Escalating routine calls under this header turns the report
   into a permission queue, which costs more than the occasional wrong assumption.
-- **Point at the durable record, don't restate it.** *Where Findings Go* sends a
-  decision owed to a worklog entry; the question belongs here, the context behind
-  it belongs there, and this list cites it by path.
+- **Point at the durable record, don't restate it.** A decision owed goes to a
+  worklog entry; the question belongs here, the context behind it belongs there,
+  and this list cites the entry by path.
 - **"None" is the common case.** Same as side observations, and harder: a
   manufactured question doesn't just cost a read, it costs a reply.
 
 Scope this to real work batches. A question, a short answer, a one-line edit, or a
 conversational turn gets a normal reply — a rule applied ceremonially to trivial
 turns is one that erodes into being ignored on the turns that matter.
-
-## Where Findings Go
-
-A side observation has exactly one home. Pick it by what the item *needs*, not by
-how interesting it was:
-
-| The item is... | It goes... |
-|---|---|
-| something **someone outside this session** must act on — it needs scheduling, review, or acceptance criteria, or I track it as a deliverable | the issue tracker, linked to its worklog entry |
-| an open question, a decision owed, a defect you are deliberately not fixing — anything I'd otherwise have to re-derive | a worklog entry, cited by path in your report |
-| a recurring gotcha — a convention you only found by violating it, an undocumented setup step | the project's `CLAUDE.md` under `## Mistakes` — or your auto-memory `mistakes.md` when it isn't project-specific. Format per *Learning from Mistakes* below |
-| friction that was **substantial and preventable** — a straightforward change tripping a footgun, real effort spent hunting for something that should have been easy, a tool behaving surprisingly | one line in your final remarks: what the obstacle was, plus one concrete recommendation to avoid it next time |
-| already handled inside this change, or a passing thought | nowhere durable. A comment at the line someone would next edit, or the PR body, and then let it go |
-
-When an item fits two rows, put it in the more durable home and point at it from
-the other. Three rules bind across all of them:
-
-- **File at discovery time**, not when you get around to acting on it — that is
-  when the context is free. You have just run the command and seen why it looked
-  wrong. An hour later, or after a compaction, the same entry costs a
-  re-investigation to write, and the second version is worse because it
-  reconstructs the reasoning instead of recording it.
-- **File it, don't pursue it.** Recording an item is not permission to act on it,
-  and it doesn't license a detour from what I actually asked for.
-- **Never file it twice.** The report is the *surface* — what I see now, then
-  scroll past. The worklog and the tracker are the *durable record*. An item that
-  earns a durable home gets a **pointer** in the report, not a second copy of the
-  prose.
 
 ## Writing a Worklog Entry
 
@@ -331,7 +328,7 @@ Before writing a memory, ask: **can this become false without a commit?** If yes
 
 ## Learning from Mistakes
 
-*Where Findings Go* decides which file a gotcha lands in. Record one when I correct you, when a check fails because of something you did wrong, or when you find a convention only by violating it — and only when it is non-obvious and specific to this project, never general programming knowledge. The format:
+The routing table under *Report Against the Primary Goal* decides which file a gotcha lands in. Record one when I correct you, when a check fails because of something you did wrong, or when you find a convention only by violating it — and only when it is non-obvious and specific to this project, never general programming knowledge. The format:
 
 ```
 - **[category]**: concise description. `wrong` → `right`.
