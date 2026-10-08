@@ -330,6 +330,18 @@ When implementing new functionality or fixing bugs, follow red-green TDD:
 - **Run the failing test before writing implementation**, to confirm it fails for the reason you think it does.
 - **No implementation for new behavior or a bug fix without a corresponding test.** Behavior-preserving edits — docs, config, renames, formatting — are outside this, as is a deliberate throwaway spike you intend to delete rather than land.
 - **Keep the cycles small**, one behavior at a time.
+- **Each test states the requirement it protects** — what the system must do,
+  and why when the reason isn't self-evident — so the test file reads as the
+  system's spec. Where the framework names tests with a free-form string (bats
+  `@test "…"`, `it("…")`), the name carries the requirement and a comment adds
+  only the why; elsewhere it goes in a docstring or comment. Write it at the red
+  step, while the requirement is in hand. A comment that reads the name back
+  adds nothing: "lookup accepts string or int IDs" earns its place only with
+  "IDs arrive from both the legacy system (int) and the new one (string)."
+  Nothing checks this text, so state behavior that survives a refactor, not
+  mechanics — if you can't phrase it without naming internals, the test is
+  probably pinned to the implementation. This covers tests you write; in
+  existing tests, propose backfilling rather than doing it silently.
 
 ## Memory: Cache Rediscovery, Not State
 
