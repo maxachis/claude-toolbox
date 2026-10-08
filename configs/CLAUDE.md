@@ -271,10 +271,13 @@ After those two headers, use ordinary prose for anything longer: detail, evidenc
 obstacles, and the assumptions you settled on your own.
 
 **Next Decisions** — last, closest to where I type the answer: a numbered list of
-questions only I can settle, each phrased as an actual question and each carrying
-your recommendation. A fork with no recommendation attached hands me the analysis
-instead of the decision.
+questions only I can settle, each phrased as an actual question with its options
+laid out plainly.
 
+- **Don't recommend unless I ask.** A pick placed beside the options anchors my
+  answer before I've weighed them, and the decision ends up settled by your
+  framing instead of by me. This holds wherever you put a choice to me, including
+  the question tool — no "(Recommended)" label there either.
 - **The bar is that the answers lead to materially different work.** A call you
   can make yourself, or already made under an assumption you stated, is not a
   decision I owe you — it stays in the prose as an assumption, and I'll overturn
