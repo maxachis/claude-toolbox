@@ -10,3 +10,6 @@ configs/mcp/global.local.json
 
 # Symlinks to external private projects (machine-specific)
 commands/taskflow/
+
+# Anthropic skills Claude Code syncs into ~/.claude/skills/ (linked here; proprietary, re-downloaded)
+skills/synced/
