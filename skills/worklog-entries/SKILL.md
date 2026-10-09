@@ -74,7 +74,26 @@ noise. Label the exception:
   appear. It tells the next reader not to go hunting for confirmation, and not to
   weigh its own inference as equally authoritative.
 - **Decisions I made** — name me, rather than writing them in the same first-person
-  voice as your own reasoning.
+  voice as your own reasoning. How much of my wording to keep depends on what it
+  carries:
+  - **A bare choice** — yes/no, or a pick from options you laid out — gets one
+    line: `Max chose B over A (2026-10-09)`. Quoting "yes" preserves nothing.
+  - **A condition, a scope limit, or a reason** — quote it verbatim, as a
+    blockquote attributed and dated: `> "…" — Max, 2026-10-09`. Paraphrase is
+    where a ruling drifts: "only for security-urgent matters" softens into "avoid
+    changing it," and a reconstructed *why* becomes indistinguishable from one you
+    inferred. My rationale is also what lets a later reader decide whether the
+    ruling reaches a case it wasn't made for, so it is the part least safe to
+    summarize.
+  - **Quote the operative sentences, not the message.** Trim with `[…]`, replace a
+    third party's name with a bracketed role, and drop asides — the quote is going
+    into a committed file.
+  - **Pair the quote with what it answered.** "Yes, but not on prod" is
+    meaningless alone. Give the question or options it responded to, and mark
+    that framing as yours if you wrote it.
+  - **A superseding ruling replaces the old quote in place**, per the rewrite rule
+    above. Keep the old one only when the reversal itself is the point, and say
+    plainly which ruling is in force.
 
 Attribution is not permanence: something I stated about mutable external state is
 still a lead to re-verify, not a fact. And never add an `author:` field or a
