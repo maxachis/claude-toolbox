@@ -26,11 +26,23 @@ Help diagnose and fix a bug or issue.
    - Look for similar patterns in the codebase
    - Check logs or error outputs
 5. Identify the root cause
-6. Write a regression test that fails for the right reason:
+6. Trace how the bug came to be — a defect in the current code is the *what*;
+   its history is the *why*, and the why often changes the right fix:
+   - Find the introducing change: `git blame` the faulty lines, `git log -S`/`-G`
+     for when the pattern appeared or a guard disappeared, `git bisect` when a
+     known-good point exists
+   - Say how it arose: wrong from the start, a refactor that dropped a safeguard,
+     an unrelated change that broke an assumption elsewhere, or a requirement
+     that moved under correct-at-the-time code
+   - Say why nothing caught it: the missing test, the unchecked case, the
+     review blind spot
+   - If the history isn't recoverable (squashed, vendored, pre-dates the repo),
+     say so rather than inventing a story
+7. Write a regression test that fails for the right reason:
    - Assert the correct behavior, and confirm the test fails against the unfixed code
    - A test that passes before the fix is testing the wrong thing
-7. Propose a fix with explanation, and confirm the new test passes with it
-8. Search for the same mistake elsewhere:
+8. Propose a fix with explanation, and confirm the new test passes with it
+9. Search for the same mistake elsewhere:
    - Describe the root cause as a pattern (e.g. "unchecked index after a filter",
      "timestamp compared across time zones"), then grep for that shape — not for
      the specific symptom
@@ -38,4 +50,4 @@ Help diagnose and fix a bug or issue.
      and anywhere the buggy code was copied from or to
    - Report each occurrence found. Fix them only if in scope; otherwise list them
      so the user can decide
-9. If uncertain, list the top possibilities with how to verify each
+10. If uncertain, list the top possibilities with how to verify each
