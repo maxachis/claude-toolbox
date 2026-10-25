@@ -27,6 +27,9 @@ Do not treat those as separate artifacts:
   a wrong approach gets diagnosed after the fact, and how trends across many entries
   become visible.
 - **The resolution**, recorded when it lands — the PR, or the decision not to act.
+  Recording a fix is also when the entry moves to the archive, so rewrite the
+  lede's "where it stands" sentence to the resolution in that same pass; an
+  archived entry whose lede still says "open" misleads whoever finds it by search.
 
 These sections are the entry's maximum shape, not a checklist. An item with one
 obvious approach has no "approaches considered", and a straw man written to fill

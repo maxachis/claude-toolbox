@@ -317,10 +317,16 @@ only what decides whether and when you file at all:
   right entry grows with the length of every other entry.
 - **An entry is one item.** An item whose lede won't fit in two sentences is
   usually two items.
-- **Never resolve an entry on your own.** Open items are mine to close. When a fix
-  lands, move the entry to the middle rung — `fixed, awaiting close` — rather than
-  leaving it plain `open`, so that "open" keeps meaning *someone still owes this
-  something*. You may set that rung; only I clear it.
+- **Close a fixed entry in the same pass as the fix.** When a fix lands and its
+  verification passes, record the resolution, mark the entry `fixed`, and move it
+  into the worklog's `archive/` (or wherever the repo's `CLAUDE.md` says), fixing
+  inbound links — alongside the fix, not as a later cleanup. A fixed entry left
+  among the open ones costs a read on every survey of the directory, and "open"
+  stops meaning *someone still owes this something*.
+- **Never close an entry on any other grounds.** A verified fix is the only
+  resolution you may apply yourself. Deciding not to act, ruling something
+  not-a-bug, or a fix you couldn't verify are mine to call — record your finding
+  and leave the entry open.
 
 ## Test-Driven Development
 

@@ -61,8 +61,8 @@ looking, a commit on the wrong branch, and a destroyed branch you didn't create.
 - **Before spending one, name what is unrecoverable.** If the worst case is a wasted
   read or a reopened item, it is not a MUST — the bar is recovery cost, not how
   strongly the rule is felt.
-- **Prefer "Never" for boundaries that are mine to draw.** "Never resolve an entry on
-  your own" binds exactly as hard; the preamble already says unmarked rules are fully
+- **Prefer "Never" for boundaries that are mine to draw.** "Never close an entry on
+  any other grounds" binds exactly as hard; the preamble already says unmarked rules are fully
   in force. Marking ownership rules as MUST widens the gate to "I feel strongly about
   this," and then nothing keeps the count at four.
 - **`SHOULD` only where a nearby `MUST` gives it meaning.** The one SHOULD in the file
